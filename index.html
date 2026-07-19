@@ -1,25 +1,22 @@
 <meta charset="utf-8">
-<title>Feliz aniversário, Lya 🖤</title>
+<title>Feliz aniversário, Lya 🎂</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%96%A4%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%82%3C/text%3E%3C/svg%3E">
 
 <style>
   :root {
-    --ink: #0d0f16;
-    --ink-deep: #06070b;
-    --paper: #f3ede0;
-    --paper-soft: #cfc6b3;
-    --amber: #e8a53d;
-    --amber-deep: #c97f1e;
-
-    --monaco-1: #1f4e79;
-    --monaco-2: #cda434;
-    --stage-1: #c93b8e;
-    --stage-2: #6a4fd6;
-    --savanna-1: #b85c2e;
-    --savanna-2: #d9a441;
-    --mist-1: #5c7387;
-    --mist-2: #8b8fa3;
+    --ink: #1a0f14;
+    --ink-deep: #100a0d;
+    --paper: #f7ecd9;
+    --paper-soft: #d9c4ad;
+    --flame: #ffb648;
+    --flame-deep: #e8862f;
+    --frosting-rose: #e8a1b0;
+    --frosting-rose-deep: #c97288;
+    --frosting-cream: #f3e4d0;
+    --choc: #4a2b1a;
+    --choc-deep: #331c10;
+    --gold: #d4a94b;
 
     --font-display: "Arial Narrow", Arial, sans-serif;
     --font-body: "Segoe UI", -apple-system, "Helvetica Neue", Arial, sans-serif;
@@ -31,520 +28,428 @@
 
   body {
     margin: 0;
-    background: var(--ink);
+    background: radial-gradient(ellipse 120% 60% at 50% 0%, #2a1620 0%, var(--ink) 55%, var(--ink-deep) 100%);
     color: var(--paper);
     font-family: var(--font-body);
     overflow-x: hidden;
     -webkit-tap-highlight-color: transparent;
-  }
-
-  /* ---------- trip bar ---------- */
-  .tripbar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 20;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(10px, 4vw, 28px);
-    padding: 14px 16px 10px;
-    background: linear-gradient(180deg, rgba(6,7,11,0.92) 0%, rgba(6,7,11,0) 100%);
-    pointer-events: none;
-  }
-  .pin {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    opacity: 0.38;
-    transition: opacity 0.4s ease;
-  }
-  .pin.lit { opacity: 1; }
-  .pin .dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--paper-soft);
-    box-shadow: none;
-    transition: background 0.4s ease, box-shadow 0.4s ease;
-  }
-  .pin.lit .dot {
-    background: var(--amber);
-    box-shadow: 0 0 10px 2px rgba(232,165,61,0.7);
-  }
-  .pin .label {
-    font-family: var(--font-data);
-    font-size: 9.5px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--paper-soft);
-    white-space: nowrap;
-  }
-  .pin.lit .label { color: var(--amber); }
-
-  /* ---------- screens ---------- */
-  .stage {
-    position: relative;
     min-height: 100vh;
-    min-height: 100dvh;
   }
 
-  .screen {
-    display: none;
-    position: relative;
-    min-height: 100vh;
-    min-height: 100dvh;
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 44px 20px 60px;
     box-sizing: border-box;
-    padding: 96px 24px 56px;
-    display: none;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-start;
-    overflow: hidden;
-    animation: fadeIn 0.6s ease both;
-  }
-  .screen.active { display: flex; }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-
-  .scene-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-  }
-
-  .content {
-    position: relative;
-    z-index: 2;
-    max-width: 560px;
+    text-align: center;
   }
 
   .eyebrow {
     font-family: var(--font-data);
     font-size: 11.5px;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--amber);
-    margin: 0 0 10px;
+    color: var(--flame);
+    margin: 0 0 12px;
   }
 
-  h1.stop-title {
+  h1 {
     font-family: var(--font-display);
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.02em;
     font-stretch: condensed;
-    font-size: clamp(38px, 11vw, 64px);
-    line-height: 0.98;
-    margin: 0 0 16px;
+    letter-spacing: 0.01em;
+    font-size: clamp(34px, 9vw, 52px);
+    line-height: 1.02;
+    margin: 0 0 14px;
     text-wrap: balance;
-    color: var(--paper);
   }
 
-  .stop-text {
+  .lead {
     font-size: 16.5px;
     line-height: 1.6;
     color: var(--paper-soft);
-    max-width: 46ch;
+    max-width: 42ch;
+    margin: 0 auto 8px;
     text-wrap: pretty;
-    margin: 0 0 28px;
   }
 
-  .readout {
-    font-family: var(--font-data);
-    font-size: 12px;
-    letter-spacing: 0.05em;
-    color: var(--amber);
-    margin: 0 0 18px;
-    font-variant-numeric: tabular-nums;
+  /* ---------- palco 3D do bolo ---------- */
+  .cake-stage {
+    perspective: 1300px;
+    height: clamp(280px, 62vw, 380px);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin: 18px 0 6px;
+  }
+
+  .cake {
+    position: relative;
+    width: 220px;
+    height: 230px;
+    transform-style: preserve-3d;
+    animation: girar 16s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cake { animation: none; }
+  }
+  @keyframes girar {
+    from { transform: rotateX(-8deg) rotateY(0deg); }
+    to   { transform: rotateX(-8deg) rotateY(360deg); }
+  }
+
+  .tier {
+    position: absolute;
+    left: 50%;
+    transform-style: preserve-3d;
+    transform: translateX(-50%);
+  }
+  .tier .face {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform-origin: center;
+    backface-visibility: hidden;
+  }
+  .tier .cap {
+    position: absolute;
+    left: 50%;
+    border-radius: 50%;
+    transform: translateX(-50%) rotateX(90deg);
+  }
+
+  /* camada de baixo: chocolate */
+  #tier-base { width: 200px; height: 92px; bottom: 0; }
+  #tier-base .cap { width: 200px; height: 200px; top: -100px; background: radial-gradient(circle at 35% 35%, #6b4226, var(--choc)); }
+  /* camada do meio: rosa */
+  #tier-mid { width: 148px; height: 76px; bottom: 92px; }
+  #tier-mid .cap { width: 148px; height: 148px; top: -74px; background: radial-gradient(circle at 35% 35%, #f0b9c6, var(--frosting-rose)); }
+  /* camada de cima: creme */
+  #tier-top { width: 96px; height: 58px; bottom: 168px; }
+  #tier-top .cap { width: 96px; height: 96px; top: -48px; background: radial-gradient(circle at 35% 35%, #fbf1e4, var(--frosting-cream)); }
+
+  .vela {
+    position: absolute;
+    left: 50%;
+    bottom: 226px;
+    transform: translateX(-50%) translateZ(20px);
+    width: 8px;
+    z-index: 5;
+  }
+  .vela .corpo { width: 8px; height: 34px; background: linear-gradient(90deg, #fff 0%, #ffe9c9 50%, #fff 100%); border-radius: 2px; margin: 0 auto; }
+  .vela .chama {
+    width: 12px; height: 20px;
+    margin: -16px auto 0;
+    background: radial-gradient(circle at 50% 70%, var(--flame) 0%, var(--flame-deep) 60%, transparent 75%);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation: tremer 1.6s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
+  .vela.apagada .chama { display: none; }
+  @keyframes tremer {
+    0%, 100% { transform: rotate(-3deg) scaleY(1); }
+    50% { transform: rotate(3deg) scaleY(1.08); }
   }
 
   .btn {
     font-family: var(--font-body);
     font-size: 15.5px;
     font-weight: 600;
-    letter-spacing: 0.02em;
     color: var(--ink-deep);
-    background: var(--amber);
+    background: var(--flame);
     border: none;
     border-radius: 999px;
-    padding: 14px 30px;
+    padding: 13px 28px;
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-    box-shadow: 0 10px 26px rgba(232,165,61,0.28);
+    transition: transform 0.15s ease, background 0.15s ease;
+    box-shadow: 0 10px 24px rgba(255,182,72,0.28);
   }
-  .btn:hover { background: #f0b155; }
+  .btn:hover { background: #ffc670; }
   .btn:active { transform: scale(0.96); }
   .btn:focus-visible { outline: 3px solid var(--paper); outline-offset: 3px; }
-
-  /* ---------- intro screen ---------- */
-  #tela-intro {
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding-top: 40px;
-  }
-  #tela-intro .content { max-width: 480px; }
-  #tela-intro h1 {
-    font-family: var(--font-display);
-    font-stretch: condensed;
-    text-transform: uppercase;
-    font-size: clamp(40px, 12vw, 68px);
-    line-height: 1;
-    margin: 0 0 18px;
-    letter-spacing: 0.01em;
-    text-wrap: balance;
-  }
-  #tela-intro .lead {
-    font-size: 17px;
-    line-height: 1.65;
+  .btn-ghost {
+    background: transparent;
     color: var(--paper-soft);
-    margin: 0 0 34px;
-    max-width: 40ch;
-    margin-left: auto;
-    margin-right: auto;
+    border: 2px solid rgba(217,196,173,0.35);
+    box-shadow: none;
+  }
+  .btn-ghost:hover { background: rgba(217,196,173,0.08); }
+
+  .hint {
+    font-family: var(--font-data);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--paper-soft);
+    margin: 18px 0 30px;
   }
 
-  /* ---------- Mônaco ---------- */
-  #tela-monaco .scene-bg {
-    background:
-      radial-gradient(ellipse 90% 60% at 50% 100%, rgba(205,164,52,0.22), transparent 60%),
-      linear-gradient(180deg, #081422 0%, var(--monaco-1) 55%, #0d2338 100%);
-  }
-  .harbor-lights {
-    position: absolute;
-    bottom: 18%;
-    left: 0; right: 0;
-    height: 2px;
-    display: flex;
-    justify-content: space-evenly;
-  }
-  .harbor-lights span {
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    background: var(--monaco-2);
-    box-shadow: 0 0 8px 2px rgba(205,164,52,0.9);
-  }
-  .flag-strip {
-    position: absolute;
-    top: 0; right: 0;
-    width: 46px; height: 46px;
-    background-image:
-      repeating-conic-gradient(#0d0f16 0% 25%, #f3ede0 0% 50%);
-    background-size: 12px 12px;
-    opacity: 0.9;
+  /* ---------- molduras / mesa de fotos ---------- */
+  .mesa-titulo {
+    font-family: var(--font-data);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 18px;
   }
 
-  /* ---------- Stray Kids / Rock in Rio ---------- */
-  #tela-show .scene-bg {
-    background:
-      radial-gradient(circle at 30% 20%, rgba(201,59,142,0.5), transparent 45%),
-      radial-gradient(circle at 75% 15%, rgba(106,79,214,0.45), transparent 50%),
-      linear-gradient(180deg, #14081d 0%, #1c0e2b 55%, #0d0710 100%);
-  }
-  .beam {
-    position: absolute;
-    top: -10%;
-    width: 140px;
-    height: 130%;
-    background: linear-gradient(180deg, rgba(255,255,255,0.16), transparent 70%);
-    transform-origin: top center;
-    filter: blur(2px);
-  }
-  .crowd {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 64px;
-    background: repeating-linear-gradient(
-      90deg, #0d0710 0 10px, #1c0e2b 10px 20px
-    );
-    mask-image: linear-gradient(180deg, transparent, #000 60%);
+  .molduras {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    max-width: 480px;
+    margin: 0 auto;
   }
 
-  /* ---------- Safári ---------- */
-  #tela-safari .scene-bg {
-    background:
-      radial-gradient(circle at 50% 78%, rgba(217,164,65,0.55), transparent 55%),
-      linear-gradient(180deg, #3a1e10 0%, var(--savanna-1) 45%, #6e3719 100%);
+  .moldura {
+    background: var(--paper);
+    border-radius: 4px;
+    padding: 8px 8px 34px;
+    cursor: pointer;
+    box-shadow: 0 14px 26px rgba(0,0,0,0.45);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
   }
-  .sun {
+  .moldura:nth-child(1) { transform: rotate(-3.5deg); }
+  .moldura:nth-child(2) { transform: rotate(2.5deg); }
+  .moldura:nth-child(3) { transform: rotate(2deg); }
+  .moldura:nth-child(4) { transform: rotate(-2.5deg); }
+  .moldura:hover { transform: scale(1.04) rotate(0deg); box-shadow: 0 20px 34px rgba(0,0,0,0.55); }
+  .moldura:focus-visible { outline: 3px solid var(--flame); outline-offset: 3px; }
+
+  .moldura .foto {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 2px;
+    display: block;
+    background: var(--choc-deep);
+  }
+  .moldura .legenda {
     position: absolute;
-    left: 50%; bottom: 22%;
-    width: 90px; height: 90px;
-    border-radius: 50%;
-    background: var(--savanna-2);
-    box-shadow: 0 0 60px 20px rgba(217,164,65,0.5);
-    transform: translateX(-50%);
-  }
-  .acacia {
-    position: absolute;
-    bottom: 20%;
-    width: 70px; height: 60px;
-  }
-  .acacia .trunk {
-    position: absolute; left: 47%; bottom: 0;
-    width: 5px; height: 34px;
-    background: #1e1108;
-  }
-  .acacia .canopy {
-    position: absolute; left: 0; top: 0;
-    width: 70px; height: 22px;
-    background: #1e1108;
-    border-radius: 50% 50% 40% 40%;
+    bottom: 8px; left: 0; right: 0;
+    text-align: center;
+    font-family: var(--font-letter);
+    font-style: italic;
+    font-size: 13.5px;
+    color: var(--ink-deep);
   }
 
-  /* ---------- Melbourne ---------- */
-  #tela-melbourne .scene-bg {
-    background:
-      linear-gradient(180deg, #232c34 0%, var(--mist-1) 55%, #4a5b68 100%);
-  }
-  .skyline {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 34%;
-    background: #171e24;
-    clip-path: polygon(
-      0% 100%, 0% 55%, 6% 55%, 6% 35%, 12% 35%, 12% 60%, 20% 60%, 20% 20%,
-      27% 20%, 27% 65%, 35% 65%, 35% 40%, 43% 40%, 43% 70%, 50% 70%, 50% 30%,
-      58% 30%, 58% 62%, 66% 62%, 66% 15%, 73% 15%, 73% 58%, 81% 58%, 81% 42%,
-      89% 42%, 89% 66%, 96% 66%, 96% 50%, 100% 50%, 100% 100%
-    );
-  }
-  .fog {
-    position: absolute;
+  /* ---------- modal da moldura ---------- */
+  .modal-overlay {
+    position: fixed;
     inset: 0;
-    background:
-      radial-gradient(ellipse 70% 40% at 20% 70%, rgba(139,143,163,0.55), transparent 70%),
-      radial-gradient(ellipse 60% 35% at 80% 60%, rgba(139,143,163,0.4), transparent 70%);
-    filter: blur(6px);
+    z-index: 40;
+    background: rgba(16,10,13,0.88);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-sizing: border-box;
   }
+  .modal-overlay.aberto { display: flex; }
+  .modal-card {
+    background: var(--ink);
+    border: 1px solid rgba(217,196,173,0.2);
+    border-radius: 16px;
+    max-width: 420px;
+    width: 100%;
+    overflow: hidden;
+    text-align: left;
+    animation: modalIn 0.3s ease both;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(14px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .modal-card img {
+    width: 100%;
+    display: block;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .modal-body { padding: 20px 22px 24px; }
+  .modal-body .eyebrow { margin-bottom: 8px; }
+  .modal-body h2 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-stretch: condensed;
+    font-size: 26px;
+    margin: 0 0 10px;
+  }
+  .modal-body p {
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--paper-soft);
+    margin: 0 0 18px;
+  }
+  .modal-fechar {
+    background: none;
+    border: none;
+    color: var(--paper-soft);
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0;
+  }
+  .modal-fechar:hover { color: var(--paper); }
 
-  /* ---------- final: carta ---------- */
-  #tela-carta .scene-bg {
-    background:
-      radial-gradient(ellipse 70% 40% at 50% 100%, rgba(232,165,61,0.16), transparent 60%),
-      linear-gradient(180deg, var(--ink-deep) 0%, var(--ink) 100%);
-  }
-  .stars {
-    position: absolute;
-    inset: 0;
-    background-image:
-      radial-gradient(1.5px 1.5px at 20% 30%, var(--paper-soft), transparent),
-      radial-gradient(1.5px 1.5px at 70% 20%, var(--paper-soft), transparent),
-      radial-gradient(1px 1px at 40% 15%, var(--paper-soft), transparent),
-      radial-gradient(1px 1px at 85% 40%, var(--paper-soft), transparent),
-      radial-gradient(1.5px 1.5px at 55% 10%, var(--paper-soft), transparent),
-      radial-gradient(1px 1px at 10% 55%, var(--paper-soft), transparent);
-    opacity: 0.6;
-  }
+  /* ---------- carta final ---------- */
+  #carta-overlay .modal-card { max-width: 480px; }
   .carta-texto {
     font-family: var(--font-letter);
     font-style: italic;
-    font-size: 17px;
+    font-size: 16.5px;
     line-height: 1.75;
     color: var(--paper);
-    max-width: 48ch;
-    text-wrap: pretty;
   }
-  .carta-texto p { margin: 0 0 16px; }
+  .carta-texto p { margin: 0 0 14px; }
   .assinatura {
     font-family: var(--font-letter);
     font-style: italic;
-    font-size: 17px;
-    color: var(--amber);
-    margin-top: 8px;
+    font-size: 16.5px;
+    color: var(--flame);
+    margin-top: 4px;
   }
 
-  /* ---------- carro ---------- */
-  .car-wrap {
-    position: fixed;
-    left: 50%;
-    bottom: 26px;
-    z-index: 15;
-    transform: translateX(-50%);
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-  }
-  .car-wrap.driving { animation: driveAcross 1.1s ease-in-out; }
-  @keyframes driveAcross {
-    0%   { transform: translateX(-160vw); }
-    100% { transform: translateX(-50%); }
-  }
-  .car-svg { width: 96px; height: auto; display: block; }
-
-  @media (min-width: 768px) {
-    .screen { padding: 120px 64px 72px; }
-    .content { max-width: 620px; }
-    .stop-text { font-size: 18px; }
-    .carta-texto { font-size: 18.5px; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .screen { animation: none; }
-    .car-wrap.driving { animation: none; }
+  @media (min-width: 640px) {
+    .molduras { grid-template-columns: repeat(4, 1fr); max-width: 640px; }
   }
 </style>
 
-<div class="tripbar" id="tripbar">
-  <div class="pin" data-stage="monaco"><span class="dot"></span><span class="label">Mônaco</span></div>
-  <div class="pin" data-stage="show"><span class="dot"></span><span class="label">Rock in Rio</span></div>
-  <div class="pin" data-stage="safari"><span class="dot"></span><span class="label">Savana</span></div>
-  <div class="pin" data-stage="melbourne"><span class="dot"></span><span class="label">Melbourne</span></div>
+<div class="wrap">
+  <p class="eyebrow">um bolo diferente esse ano</p>
+  <h1>Feliz aniversário,<br>Lya</h1>
+  <p class="lead">Fiz um bolo pra você — e cada moldura ao redor guarda um sonho teu. Depois, apaga a vela.</p>
+
+  <div class="cake-stage">
+    <div class="cake">
+      <div class="tier" id="tier-base">
+        <div class="cap"></div>
+      </div>
+      <div class="tier" id="tier-mid">
+        <div class="cap"></div>
+      </div>
+      <div class="tier" id="tier-top">
+        <div class="cap"></div>
+      </div>
+      <div class="vela" id="vela">
+        <div class="chama"></div>
+        <div class="corpo"></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="hint">o bolo gira sozinho — olha ele de todo lado</p>
+
+  <p class="mesa-titulo">toca em cada moldura</p>
+  <div class="molduras">
+    <button class="moldura" data-stop="monaco">
+      <img class="foto" src="img/monaco.jpg" alt="Circuito de Mônaco visto de cima">
+      <span class="legenda">Mônaco</span>
+    </button>
+    <button class="moldura" data-stop="show">
+      <img class="foto" src="img/show.jpg" alt="Show com luzes de palco rosa e plateia">
+      <span class="legenda">Rock in Rio</span>
+    </button>
+    <button class="moldura" data-stop="safari">
+      <img class="foto" src="img/safari.jpg" alt="Leão na savana ao pôr do sol">
+      <span class="legenda">Safári</span>
+    </button>
+    <button class="moldura" data-stop="melbourne">
+      <img class="foto" src="img/melbourne.jpg" alt="Skyline de Melbourne com neblina">
+      <span class="legenda">Melbourne</span>
+    </button>
+  </div>
+
+  <p class="hint" style="margin-top:34px;">quando terminar de ver, volta aqui</p>
+  <button class="btn" id="btnSoprar">Soprar a vela 🕯️</button>
 </div>
 
-<div class="stage">
+<!-- modal das molduras -->
+<div class="modal-overlay" id="modalMoldura">
+  <div class="modal-card">
+    <img id="modalImg" src="" alt="">
+    <div class="modal-body">
+      <p class="eyebrow" id="modalEyebrow"></p>
+      <h2 id="modalTitulo"></h2>
+      <p id="modalTexto"></p>
+      <button class="modal-fechar" id="fecharModal">fechar ✕</button>
+    </div>
+  </div>
+</div>
 
-  <!-- INTRO -->
-  <section class="screen active" id="tela-intro">
-    <div class="scene-bg" style="background:linear-gradient(180deg,#06070b 0%,#0d0f16 100%);"></div>
-    <div class="content">
-      <p class="eyebrow">um roteiro só teu</p>
-      <h1>Feliz aniversário,<br>Lya</h1>
-      <p class="lead">Antes do bolo: separei quatro lugares que moram nos teus sonhos. Bora dar uma volta?</p>
-      <button class="btn" data-next="monaco">Ligar o carro</button>
-    </div>
-  </section>
-
-  <!-- MÔNACO -->
-  <section class="screen" id="tela-monaco">
-    <div class="scene-bg">
-      <div class="harbor-lights">
-        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-      </div>
-      <div class="flag-strip"></div>
-    </div>
-    <div class="content">
-      <p class="eyebrow">parada 1 · Mônaco</p>
-      <h1 class="stop-title">Grand Prix</h1>
-      <p class="readout">DISTÂNCIA ATÉ O GRID: 9.876 KM</p>
-      <p class="stop-text">Aquele ingresso VIP que tu já pediu pro universo, sem meio termo. O grid, o iate, o cheiro de asfalto quente — tudo do jeito que tu sempre imaginou vendo os carros passarem.</p>
-      <button class="btn" data-next="show">Próxima parada →</button>
-    </div>
-  </section>
-
-  <!-- STRAY KIDS / ROCK IN RIO -->
-  <section class="screen" id="tela-show">
-    <div class="scene-bg">
-      <div class="beam" style="left:22%; transform:rotate(-14deg);"></div>
-      <div class="beam" style="left:48%; transform:rotate(4deg);"></div>
-      <div class="beam" style="left:70%; transform:rotate(16deg);"></div>
-      <div class="crowd"></div>
-    </div>
-    <div class="content">
-      <p class="eyebrow">parada 2 · Rio de Janeiro</p>
-      <h1 class="stop-title">Stray Kids<br>ao vivo</h1>
-      <p class="readout">LOTAÇÃO: 66.000 PESSOAS · FILA: A PARTIR DE AGORA</p>
-      <p class="stop-text">Lembra quando saiu a notícia e tu chorou de alegria na hora? Essa é a parada onde isso vira palco de verdade, luz de verdade, grito de verdade — na plateia da frente.</p>
-      <button class="btn" data-next="safari">Próxima parada →</button>
-    </div>
-  </section>
-
-  <!-- SAFARI -->
-  <section class="screen" id="tela-safari">
-    <div class="scene-bg">
-      <div class="sun"></div>
-      <div class="acacia" style="left:14%;"><div class="canopy"></div><div class="trunk"></div></div>
-      <div class="acacia" style="left:72%; transform:scale(0.75);"><div class="canopy"></div><div class="trunk"></div></div>
-    </div>
-    <div class="content">
-      <p class="eyebrow">parada 3 · savana africana</p>
-      <h1 class="stop-title">Safári</h1>
-      <p class="readout">PÔR DO SOL: AGORA · CLASSE: BIOLÓGICA (ÓBVIO)</p>
-      <p class="stop-text">Essa parada é só tua por direito: a bióloga que passa o semestre entre lâminas e apostilas, finalmente vendo de perto o que só existia em livro e vídeo de documentário.</p>
-      <button class="btn" data-next="melbourne">Próxima parada →</button>
-    </div>
-  </section>
-
-  <!-- MELBOURNE -->
-  <section class="screen" id="tela-melbourne">
-    <div class="scene-bg">
-      <div class="skyline"></div>
-      <div class="fog"></div>
-    </div>
-    <div class="content">
-      <p class="eyebrow">parada 4 · Melbourne</p>
-      <h1 class="stop-title">Melbourne</h1>
-      <p class="readout">TEMPERATURA: NEBLINA DE MANHÃ · HIPERFOCO: CONFIRMADO</p>
-      <p class="stop-text">A cidade que virou hiperfoco teu do nada, com a neblina de manhã exatamente como nos vídeos que tu me mandou. E de bônus, tua irmã já tá esperando aí.</p>
-      <button class="btn" data-next="carta">Chegar em casa →</button>
-    </div>
-  </section>
-
-  <!-- CARTA FINAL -->
-  <section class="screen" id="tela-carta">
-    <div class="scene-bg"><div class="stars"></div></div>
-    <div class="content">
-      <p class="eyebrow">fim da viagem · o carro é preto, claro</p>
+<!-- modal da carta final -->
+<div class="modal-overlay" id="carta-overlay">
+  <div class="modal-card">
+    <div class="modal-body">
+      <p class="eyebrow">a vela apagou · faz o pedido</p>
       <div class="carta-texto">
-        <p>Mônaco, Rio, savana, Melbourne — quatro sonhos teus, um carro só. Ainda são só palavras numa tela, eu sei. Mas cada um desses lugares eu anotei de verdade, do jeito que tu foi contando ao longo desse ano, sem nem perceber.</p>
-        <p>Um dia a gente roda esse mapa de verdade. Até lá, feliz aniversário — que seja o ano em que pelo menos um desses sonhos sai do lugar.</p>
+        <p>Mônaco, Rio, savana, Melbourne — quatro sonhos teus, guardados em moldura. Ainda são só fotos numa tela, eu sei. Mas cada lugar eu escolhi de verdade, do jeito que tu foi contando ao longo desse ano, sem nem perceber.</p>
+        <p>Um dia a gente visita esses lugares de verdade. Até lá, feliz aniversário — que seja o ano em que pelo menos um desses sonhos sai do lugar.</p>
       </div>
       <p class="assinatura">— do fã nº 1 da diva 🖤</p>
+      <button class="modal-fechar" id="fecharCarta" style="margin-top:16px;">fechar ✕</button>
     </div>
-  </section>
-
-</div>
-
-<div class="car-wrap" id="carWrap">
-  <svg class="car-svg" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <ellipse cx="100" cy="70" rx="90" ry="6" fill="#000" opacity="0.35"></ellipse>
-    <path d="M18 52
-             L28 30
-             Q34 20 48 20
-             L120 20
-             Q136 20 146 32
-             L182 40
-             Q192 42 192 52
-             L192 56
-             L18 56
-             Z"
-          fill="#111318" stroke="#2a2d35" stroke-width="1.5"></path>
-    <path d="M52 21 L64 6 Q68 2 74 2 L108 2 Q114 2 117 6 L126 21 Z"
-          fill="#181b21" stroke="#2a2d35" stroke-width="1.5"></path>
-    <rect x="60" y="6" width="60" height="13" rx="3" fill="#0d0f16" opacity="0.9"></rect>
-    <circle cx="52" cy="58" r="15" fill="#0a0b0e" stroke="#33363e" stroke-width="2"></circle>
-    <circle cx="52" cy="58" r="6" fill="#1c1f26"></circle>
-    <circle cx="150" cy="58" r="15" fill="#0a0b0e" stroke="#33363e" stroke-width="2"></circle>
-    <circle cx="150" cy="58" r="6" fill="#1c1f26"></circle>
-    <circle cx="186" cy="45" r="4.5" fill="#e8a53d"></circle>
-    <circle cx="186" cy="45" r="9" fill="#e8a53d" opacity="0.25"></circle>
-    <rect x="16" y="44" width="6" height="4" rx="1.5" fill="#c93b3b"></rect>
-  </svg>
+  </div>
 </div>
 
 <script>
-  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var ordem = ["intro", "monaco", "show", "safari", "melbourne", "carta"];
-  var carWrap = document.getElementById("carWrap");
-
-  function irPara(id) {
-    document.querySelectorAll(".screen").forEach(function (s) {
-      s.classList.remove("active");
-    });
-    document.getElementById("tela-" + id).classList.add("active");
-    window.scrollTo(0, 0);
-
-    document.querySelectorAll(".pin").forEach(function (p) {
-      var idx = ordem.indexOf(p.getAttribute("data-stage"));
-      var atualIdx = ordem.indexOf(id);
-      p.classList.toggle("lit", idx <= atualIdx && idx !== -1 && idx !== 0);
-    });
-
-    if (id !== "intro" && !reduceMotion) {
-      carWrap.classList.remove("driving");
-      void carWrap.offsetWidth;
-      carWrap.classList.add("driving");
+  var dados = {
+    monaco: {
+      eyebrow: "moldura 1 · Mônaco",
+      titulo: "Grand Prix",
+      texto: "Aquele ingresso VIP que tu já pediu pro universo, sem meio termo. O grid, o iate, o cheiro de asfalto quente — tudo do jeito que tu sempre imaginou vendo os carros passarem."
+    },
+    show: {
+      eyebrow: "moldura 2 · Rio de Janeiro",
+      titulo: "Stray Kids ao vivo",
+      texto: "Lembra quando saiu a notícia e tu chorou de alegria na hora? Essa moldura é o dia em que isso vira palco de verdade, luz de verdade, grito de verdade — na plateia da frente."
+    },
+    safari: {
+      eyebrow: "moldura 3 · savana africana",
+      titulo: "Safári",
+      texto: "Essa é só tua por direito: a bióloga que passa o semestre entre lâminas e apostilas, finalmente vendo de perto o que só existia em livro e vídeo de documentário."
+    },
+    melbourne: {
+      eyebrow: "moldura 4 · Melbourne",
+      titulo: "Melbourne",
+      texto: "A cidade que virou hiperfoco teu do nada, com a neblina de manhã exatamente como nos vídeos que tu me mandou. E de bônus, tua irmã já tá esperando aí."
     }
-    carWrap.style.display = id === "intro" ? "none" : "block";
-  }
+  };
 
-  document.querySelectorAll("[data-next]").forEach(function (btn) {
+  var imgs = { monaco: "img/monaco.jpg", show: "img/show.jpg", safari: "img/safari.jpg", melbourne: "img/melbourne.jpg" };
+
+  var modalMoldura = document.getElementById("modalMoldura");
+  document.querySelectorAll(".moldura").forEach(function (btn) {
     btn.addEventListener("click", function () {
-      irPara(btn.getAttribute("data-next"));
+      var chave = btn.getAttribute("data-stop");
+      var d = dados[chave];
+      document.getElementById("modalImg").src = imgs[chave];
+      document.getElementById("modalEyebrow").textContent = d.eyebrow;
+      document.getElementById("modalTitulo").textContent = d.titulo;
+      document.getElementById("modalTexto").textContent = d.texto;
+      modalMoldura.classList.add("aberto");
     });
   });
+  document.getElementById("fecharModal").addEventListener("click", function () {
+    modalMoldura.classList.remove("aberto");
+  });
+  modalMoldura.addEventListener("click", function (e) {
+    if (e.target === modalMoldura) modalMoldura.classList.remove("aberto");
+  });
 
-  carWrap.style.display = "none";
+  var cartaOverlay = document.getElementById("carta-overlay");
+  document.getElementById("btnSoprar").addEventListener("click", function () {
+    document.getElementById("vela").classList.add("apagada");
+    setTimeout(function () {
+      cartaOverlay.classList.add("aberto");
+    }, 500);
+  });
+  document.getElementById("fecharCarta").addEventListener("click", function () {
+    cartaOverlay.classList.remove("aberto");
+  });
+  cartaOverlay.addEventListener("click", function (e) {
+    if (e.target === cartaOverlay) cartaOverlay.classList.remove("aberto");
+  });
 </script>
