@@ -10,13 +10,6 @@
     --paper: #f7ecd9;
     --paper-soft: #d9c4ad;
     --flame: #ffb648;
-    --flame-deep: #e8862f;
-    --frosting-rose: #e8a1b0;
-    --frosting-rose-deep: #c97288;
-    --frosting-cream: #f3e4d0;
-    --choc: #4a2b1a;
-    --choc-deep: #331c10;
-    --gold: #d4a94b;
 
     --font-display: "Arial Narrow", Arial, sans-serif;
     --font-body: "Segoe UI", -apple-system, "Helvetica Neue", Arial, sans-serif;
@@ -28,133 +21,81 @@
 
   body {
     margin: 0;
-    background: radial-gradient(ellipse 120% 60% at 50% 0%, #2a1620 0%, var(--ink) 55%, var(--ink-deep) 100%);
+    background: var(--ink-deep);
     color: var(--paper);
     font-family: var(--font-body);
-    overflow-x: hidden;
-    -webkit-tap-highlight-color: transparent;
-    min-height: 100vh;
+    overflow: hidden;
   }
 
-  .wrap {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 44px 20px 60px;
-    box-sizing: border-box;
+  #canvas3d {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    display: block;
+    touch-action: none;
+  }
+
+  .overlay-top {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 5;
     text-align: center;
+    padding: 34px 20px 0;
+    pointer-events: none;
   }
-
   .eyebrow {
     font-family: var(--font-data);
-    font-size: 11.5px;
+    font-size: 11px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--flame);
-    margin: 0 0 12px;
+    margin: 0 0 10px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.6);
   }
-
   h1 {
     font-family: var(--font-display);
     font-weight: 700;
     text-transform: uppercase;
     font-stretch: condensed;
     letter-spacing: 0.01em;
-    font-size: clamp(34px, 9vw, 52px);
+    font-size: clamp(28px, 8vw, 42px);
     line-height: 1.02;
-    margin: 0 0 14px;
+    margin: 0 0 10px;
     text-wrap: balance;
+    text-shadow: 0 4px 18px rgba(0,0,0,0.65);
   }
-
   .lead {
-    font-size: 16.5px;
-    line-height: 1.6;
+    font-size: 15px;
+    line-height: 1.55;
     color: var(--paper-soft);
-    max-width: 42ch;
-    margin: 0 auto 8px;
+    max-width: 36ch;
+    margin: 0 auto;
     text-wrap: pretty;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.6);
   }
 
-  /* ---------- palco 3D do bolo ---------- */
-  .cake-stage {
-    perspective: 1300px;
-    height: clamp(280px, 62vw, 380px);
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    margin: 18px 0 6px;
-  }
-
-  .cake {
-    position: relative;
-    width: 220px;
-    height: 230px;
-    transform-style: preserve-3d;
-    animation: girar 16s linear infinite;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .cake { animation: none; }
-  }
-  @keyframes girar {
-    from { transform: rotateX(-8deg) rotateY(0deg); }
-    to   { transform: rotateX(-8deg) rotateY(360deg); }
-  }
-
-  .tier {
-    position: absolute;
-    left: 50%;
-    transform-style: preserve-3d;
-    transform: translateX(-50%);
-  }
-  .tier .face {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform-origin: center;
-    backface-visibility: hidden;
-  }
-  .tier .cap {
-    position: absolute;
-    left: 50%;
-    border-radius: 50%;
-    transform: translateX(-50%) rotateX(90deg);
-  }
-
-  /* camada de baixo: chocolate */
-  #tier-base { width: 200px; height: 92px; bottom: 0; }
-  #tier-base .cap { width: 200px; height: 200px; top: -100px; background: radial-gradient(circle at 35% 35%, #6b4226, var(--choc)); }
-  /* camada do meio: rosa */
-  #tier-mid { width: 148px; height: 76px; bottom: 92px; }
-  #tier-mid .cap { width: 148px; height: 148px; top: -74px; background: radial-gradient(circle at 35% 35%, #f0b9c6, var(--frosting-rose)); }
-  /* camada de cima: creme */
-  #tier-top { width: 96px; height: 58px; bottom: 168px; }
-  #tier-top .cap { width: 96px; height: 96px; top: -48px; background: radial-gradient(circle at 35% 35%, #fbf1e4, var(--frosting-cream)); }
-
-  .vela {
-    position: absolute;
-    left: 50%;
-    bottom: 226px;
-    transform: translateX(-50%) translateZ(20px);
-    width: 8px;
+  .overlay-bottom {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
     z-index: 5;
+    text-align: center;
+    padding: 0 20px 30px;
+    pointer-events: none;
   }
-  .vela .corpo { width: 8px; height: 34px; background: linear-gradient(90deg, #fff 0%, #ffe9c9 50%, #fff 100%); border-radius: 2px; margin: 0 auto; }
-  .vela .chama {
-    width: 12px; height: 20px;
-    margin: -16px auto 0;
-    background: radial-gradient(circle at 50% 70%, var(--flame) 0%, var(--flame-deep) 60%, transparent 75%);
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-    animation: tremer 1.6s ease-in-out infinite;
-    transform-origin: bottom center;
-  }
-  .vela.apagada .chama { display: none; }
-  @keyframes tremer {
-    0%, 100% { transform: rotate(-3deg) scaleY(1); }
-    50% { transform: rotate(3deg) scaleY(1.08); }
+  .overlay-bottom > * { pointer-events: auto; }
+
+  .hint {
+    font-family: var(--font-data);
+    font-size: 11.5px;
+    letter-spacing: 0.05em;
+    color: var(--paper-soft);
+    margin: 0 0 14px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
   }
 
   .btn {
     font-family: var(--font-body);
-    font-size: 15.5px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--ink-deep);
     background: var(--flame);
@@ -163,85 +104,35 @@
     padding: 13px 28px;
     cursor: pointer;
     transition: transform 0.15s ease, background 0.15s ease;
-    box-shadow: 0 10px 24px rgba(255,182,72,0.28);
+    box-shadow: 0 10px 24px rgba(255,182,72,0.35);
   }
   .btn:hover { background: #ffc670; }
   .btn:active { transform: scale(0.96); }
   .btn:focus-visible { outline: 3px solid var(--paper); outline-offset: 3px; }
-  .btn-ghost {
-    background: transparent;
-    color: var(--paper-soft);
-    border: 2px solid rgba(217,196,173,0.35);
-    box-shadow: none;
-  }
-  .btn-ghost:hover { background: rgba(217,196,173,0.08); }
 
-  .hint {
+  .loading {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ink-deep);
     font-family: var(--font-data);
-    font-size: 12px;
-    letter-spacing: 0.04em;
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
     color: var(--paper-soft);
-    margin: 18px 0 30px;
-  }
-
-  /* ---------- molduras / mesa de fotos ---------- */
-  .mesa-titulo {
-    font-family: var(--font-data);
-    font-size: 11px;
-    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--gold);
-    margin: 0 0 18px;
+    transition: opacity 0.5s ease;
   }
-
-  .molduras {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-    max-width: 480px;
-    margin: 0 auto;
-  }
-
-  .moldura {
-    background: var(--paper);
-    border-radius: 4px;
-    padding: 8px 8px 34px;
-    cursor: pointer;
-    box-shadow: 0 14px 26px rgba(0,0,0,0.45);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    position: relative;
-  }
-  .moldura:nth-child(1) { transform: rotate(-3.5deg); }
-  .moldura:nth-child(2) { transform: rotate(2.5deg); }
-  .moldura:nth-child(3) { transform: rotate(2deg); }
-  .moldura:nth-child(4) { transform: rotate(-2.5deg); }
-  .moldura:hover { transform: scale(1.04) rotate(0deg); box-shadow: 0 20px 34px rgba(0,0,0,0.55); }
-  .moldura:focus-visible { outline: 3px solid var(--flame); outline-offset: 3px; }
-
-  .moldura .foto {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    border-radius: 2px;
-    display: block;
-    background: var(--choc-deep);
-  }
-  .moldura .legenda {
-    position: absolute;
-    bottom: 8px; left: 0; right: 0;
-    text-align: center;
-    font-family: var(--font-letter);
-    font-style: italic;
-    font-size: 13.5px;
-    color: var(--ink-deep);
-  }
+  .loading.pronto { opacity: 0; pointer-events: none; }
 
   /* ---------- modal da moldura ---------- */
   .modal-overlay {
     position: fixed;
     inset: 0;
     z-index: 40;
-    background: rgba(16,10,13,0.88);
+    background: rgba(16,10,13,0.9);
     display: none;
     align-items: center;
     justify-content: center;
@@ -258,6 +149,8 @@
     overflow: hidden;
     text-align: left;
     animation: modalIn 0.3s ease both;
+    max-height: 88vh;
+    overflow-y: auto;
   }
   @keyframes modalIn {
     from { opacity: 0; transform: translateY(14px) scale(0.97); }
@@ -270,13 +163,14 @@
     object-fit: cover;
   }
   .modal-body { padding: 20px 22px 24px; }
-  .modal-body .eyebrow { margin-bottom: 8px; }
+  .modal-body .eyebrow { margin-bottom: 8px; text-shadow: none; }
   .modal-body h2 {
     font-family: var(--font-display);
     text-transform: uppercase;
     font-stretch: condensed;
     font-size: 26px;
     margin: 0 0 10px;
+    text-shadow: none;
   }
   .modal-body p {
     font-size: 15.5px;
@@ -294,8 +188,6 @@
   }
   .modal-fechar:hover { color: var(--paper); }
 
-  /* ---------- carta final ---------- */
-  #carta-overlay .modal-card { max-width: 480px; }
   .carta-texto {
     font-family: var(--font-letter);
     font-style: italic;
@@ -311,58 +203,20 @@
     color: var(--flame);
     margin-top: 4px;
   }
-
-  @media (min-width: 640px) {
-    .molduras { grid-template-columns: repeat(4, 1fr); max-width: 640px; }
-  }
 </style>
 
-<div class="wrap">
+<canvas id="canvas3d"></canvas>
+
+<div class="loading" id="loading">carregando a mesa…</div>
+
+<div class="overlay-top">
   <p class="eyebrow">um bolo diferente esse ano</p>
-  <h1>Feliz aniversário,<br>Lya</h1>
-  <p class="lead">Fiz um bolo pra você — e cada moldura ao redor guarda um sonho teu. Depois, apaga a vela.</p>
+  <h1>Feliz aniversário, Lya</h1>
+  <p class="lead">Gira a câmera olhando ao redor do bolo — cada moldura flutuando é um sonho teu. Toca nelas.</p>
+</div>
 
-  <div class="cake-stage">
-    <div class="cake">
-      <div class="tier" id="tier-base">
-        <div class="cap"></div>
-      </div>
-      <div class="tier" id="tier-mid">
-        <div class="cap"></div>
-      </div>
-      <div class="tier" id="tier-top">
-        <div class="cap"></div>
-      </div>
-      <div class="vela" id="vela">
-        <div class="chama"></div>
-        <div class="corpo"></div>
-      </div>
-    </div>
-  </div>
-
-  <p class="hint">o bolo gira sozinho — olha ele de todo lado</p>
-
-  <p class="mesa-titulo">toca em cada moldura</p>
-  <div class="molduras">
-    <button class="moldura" data-stop="monaco">
-      <img class="foto" src="img/monaco.jpg" alt="Circuito de Mônaco visto de cima">
-      <span class="legenda">Mônaco</span>
-    </button>
-    <button class="moldura" data-stop="show">
-      <img class="foto" src="img/show.jpg" alt="Show com luzes de palco rosa e plateia">
-      <span class="legenda">Rock in Rio</span>
-    </button>
-    <button class="moldura" data-stop="safari">
-      <img class="foto" src="img/safari.jpg" alt="Leão na savana ao pôr do sol">
-      <span class="legenda">Safári</span>
-    </button>
-    <button class="moldura" data-stop="melbourne">
-      <img class="foto" src="img/melbourne.jpg" alt="Skyline de Melbourne com neblina">
-      <span class="legenda">Melbourne</span>
-    </button>
-  </div>
-
-  <p class="hint" style="margin-top:34px;">quando terminar de ver, volta aqui</p>
+<div class="overlay-bottom">
+  <p class="hint" id="hint">arrasta a tela pra olhar ao redor</p>
   <button class="btn" id="btnSoprar">Soprar a vela 🕯️</button>
 </div>
 
@@ -394,62 +248,317 @@
   </div>
 </div>
 
-<script>
-  var dados = {
-    monaco: {
-      eyebrow: "moldura 1 · Mônaco",
-      titulo: "Grand Prix",
-      texto: "Aquele ingresso VIP que tu já pediu pro universo, sem meio termo. O grid, o iate, o cheiro de asfalto quente — tudo do jeito que tu sempre imaginou vendo os carros passarem."
-    },
-    show: {
-      eyebrow: "moldura 2 · Rio de Janeiro",
-      titulo: "Stray Kids ao vivo",
-      texto: "Lembra quando saiu a notícia e tu chorou de alegria na hora? Essa moldura é o dia em que isso vira palco de verdade, luz de verdade, grito de verdade — na plateia da frente."
-    },
-    safari: {
-      eyebrow: "moldura 3 · savana africana",
-      titulo: "Safári",
-      texto: "Essa é só tua por direito: a bióloga que passa o semestre entre lâminas e apostilas, finalmente vendo de perto o que só existia em livro e vídeo de documentário."
-    },
-    melbourne: {
-      eyebrow: "moldura 4 · Melbourne",
-      titulo: "Melbourne",
-      texto: "A cidade que virou hiperfoco teu do nada, com a neblina de manhã exatamente como nos vídeos que tu me mandou. E de bônus, tua irmã já tá esperando aí."
-    }
-  };
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.1/build/three.module.js"
+  }
+}
+</script>
 
-  var imgs = { monaco: "img/monaco.jpg", show: "img/show.jpg", safari: "img/safari.jpg", melbourne: "img/melbourne.jpg" };
+<script type="module">
+import * as THREE from "three";
 
-  var modalMoldura = document.getElementById("modalMoldura");
-  document.querySelectorAll(".moldura").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var chave = btn.getAttribute("data-stop");
-      var d = dados[chave];
-      document.getElementById("modalImg").src = imgs[chave];
-      document.getElementById("modalEyebrow").textContent = d.eyebrow;
-      document.getElementById("modalTitulo").textContent = d.titulo;
-      document.getElementById("modalTexto").textContent = d.texto;
-      modalMoldura.classList.add("aberto");
-    });
-  });
-  document.getElementById("fecharModal").addEventListener("click", function () {
-    modalMoldura.classList.remove("aberto");
-  });
-  modalMoldura.addEventListener("click", function (e) {
-    if (e.target === modalMoldura) modalMoldura.classList.remove("aberto");
-  });
+var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  var cartaOverlay = document.getElementById("carta-overlay");
-  document.getElementById("btnSoprar").addEventListener("click", function () {
-    document.getElementById("vela").classList.add("apagada");
-    setTimeout(function () {
+var dados = {
+  monaco: {
+    eyebrow: "moldura 1 · Mônaco",
+    titulo: "Grand Prix",
+    texto: "Aquele ingresso VIP que tu já pediu pro universo, sem meio termo. O grid, o iate, o cheiro de asfalto quente — tudo do jeito que tu sempre imaginou vendo os carros passarem.",
+    foto: "img/monaco.jpg"
+  },
+  show: {
+    eyebrow: "moldura 2 · Rio de Janeiro",
+    titulo: "Stray Kids ao vivo",
+    texto: "Lembra quando saiu a notícia e tu chorou de alegria na hora? Essa moldura é o dia em que isso vira palco de verdade, luz de verdade, grito de verdade — na plateia da frente.",
+    foto: "img/show.jpg"
+  },
+  safari: {
+    eyebrow: "moldura 3 · savana africana",
+    titulo: "Safári",
+    texto: "Essa é só tua por direito: a bióloga que passa o semestre entre lâminas e apostilas, finalmente vendo de perto o que só existia em livro e vídeo de documentário.",
+    foto: "img/safari.jpg"
+  },
+  melbourne: {
+    eyebrow: "moldura 4 · Melbourne",
+    titulo: "Melbourne",
+    texto: "A cidade que virou hiperfoco teu do nada, com a neblina de manhã exatamente como nos vídeos que tu me mandou. E de bônus, tua irmã já tá esperando aí.",
+    foto: "img/melbourne.jpg"
+  }
+};
+
+/* ---------- base da cena ---------- */
+var canvas = document.getElementById("canvas3d");
+var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+var scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x140b10, 0.045);
+
+var camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 100);
+
+/* ---------- mesa ---------- */
+var mesaGeo = new THREE.CircleGeometry(9, 48);
+var mesaMat = new THREE.MeshStandardMaterial({ color: 0x2a1b14, roughness: 0.85, metalness: 0.05 });
+var mesa = new THREE.Mesh(mesaGeo, mesaMat);
+mesa.rotation.x = -Math.PI / 2;
+mesa.receiveShadow = true;
+scene.add(mesa);
+
+/* ---------- bolo ---------- */
+var cakeGroup = new THREE.Group();
+scene.add(cakeGroup);
+
+function tier(radiusTop, radiusBottom, height, y, color, roughness) {
+  var geo = new THREE.CylinderGeometry(radiusTop, radiusBottom, height, 48, 1, false);
+  var mat = new THREE.MeshStandardMaterial({ color: color, roughness: roughness, metalness: 0.02 });
+  var mesh = new THREE.Mesh(geo, mat);
+  mesh.position.y = y;
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  cakeGroup.add(mesh);
+  return mesh;
+}
+
+var yBase = 0.275;
+tier(1.02, 1.08, 0.55, yBase, 0x4a2b1a, 0.8);
+var yMid = 0.55 + 0.21;
+tier(0.76, 0.82, 0.42, yMid, 0xe8a1b0, 0.5);
+var yTop = 0.55 + 0.42 + 0.16;
+tier(0.46, 0.5, 0.32, yTop, 0xf3e4d0, 0.45);
+
+/* aneis de confeitaria entre as camadas */
+function anel(radius, y, color) {
+  var geo = new THREE.TorusGeometry(radius, 0.03, 10, 40);
+  var mat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.4 });
+  var mesh = new THREE.Mesh(geo, mat);
+  mesh.rotation.x = Math.PI / 2;
+  mesh.position.y = y;
+  mesh.castShadow = true;
+  cakeGroup.add(mesh);
+}
+anel(1.08, 0.55, 0xf3e4d0);
+anel(0.82, 0.55 + 0.42, 0xf3e4d0);
+
+/* ---------- vela ---------- */
+var velaY = 0.55 + 0.42 + 0.32;
+var velaGeo = new THREE.CylinderGeometry(0.035, 0.035, 0.32, 16);
+var velaMat = new THREE.MeshStandardMaterial({ color: 0xfff3df, roughness: 0.6 });
+var velaMesh = new THREE.Mesh(velaGeo, velaMat);
+velaMesh.position.y = velaY + 0.16;
+velaMesh.castShadow = true;
+cakeGroup.add(velaMesh);
+
+var chamaGeo = new THREE.SphereGeometry(0.075, 12, 12);
+chamaGeo.scale(1, 1.6, 1);
+var chamaMat = new THREE.MeshStandardMaterial({
+  color: 0xffb648, emissive: 0xff9a2e, emissiveIntensity: 2.2, roughness: 0.3
+});
+var chamaMesh = new THREE.Mesh(chamaGeo, chamaMat);
+chamaMesh.position.y = velaY + 0.32 + 0.09;
+cakeGroup.add(chamaMesh);
+
+/* brilho aditivo ao redor da chama */
+function criarTexturaBrilho() {
+  var c = document.createElement("canvas");
+  c.width = c.height = 128;
+  var ctx = c.getContext("2d");
+  var g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+  g.addColorStop(0, "rgba(255,200,120,0.9)");
+  g.addColorStop(0.4, "rgba(255,150,60,0.35)");
+  g.addColorStop(1, "rgba(255,150,60,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 128, 128);
+  return new THREE.CanvasTexture(c);
+}
+var brilhoSprite = new THREE.Sprite(new THREE.SpriteMaterial({
+  map: criarTexturaBrilho(), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false
+}));
+brilhoSprite.scale.set(0.9, 0.9, 0.9);
+brilhoSprite.position.y = velaY + 0.32 + 0.09;
+cakeGroup.add(brilhoSprite);
+
+var luzVela = new THREE.PointLight(0xffb648, 1.6, 6, 2);
+luzVela.position.y = velaY + 0.32 + 0.14;
+cakeGroup.add(luzVela);
+
+/* ---------- luz ambiente / de preenchimento ---------- */
+scene.add(new THREE.AmbientLight(0x554a55, 0.55));
+var luzChave = new THREE.DirectionalLight(0xffe3c2, 0.5);
+luzChave.position.set(3, 5, 2);
+luzChave.castShadow = true;
+luzChave.shadow.mapSize.set(1024, 1024);
+scene.add(luzChave);
+
+/* ---------- molduras flutuantes ---------- */
+var loader = new THREE.TextureLoader();
+var molduras = [];
+var chaves = ["monaco", "show", "safari", "melbourne"];
+var raioMoldura = 2.35;
+
+chaves.forEach(function (chave, i) {
+  var ang = (Math.PI / 2) * i + Math.PI / 4;
+  var grupo = new THREE.Group();
+
+  var molduraGeo = new THREE.BoxGeometry(0.92, 0.72, 0.05);
+  var molduraMat = new THREE.MeshStandardMaterial({ color: 0xf7ecd9, roughness: 0.5 });
+  var molduraMesh = new THREE.Mesh(molduraGeo, molduraMat);
+  molduraMesh.castShadow = true;
+  grupo.add(molduraMesh);
+
+  var textura = loader.load(dados[chave].foto);
+  textura.colorSpace = THREE.SRGBColorSpace;
+  var fotoGeo = new THREE.PlaneGeometry(0.78, 0.58);
+  var fotoMat = new THREE.MeshBasicMaterial({ map: textura });
+  var fotoMesh = new THREE.Mesh(fotoGeo, fotoMat);
+  fotoMesh.position.z = 0.026;
+  grupo.add(fotoMesh);
+
+  grupo.position.set(Math.sin(ang) * raioMoldura, 0.95, Math.cos(ang) * raioMoldura);
+  grupo.userData.chave = chave;
+  scene.add(grupo);
+  molduras.push(grupo);
+});
+
+/* ---------- câmera: orbita lenta tipo still de filme ---------- */
+var anguloCam = 0.3;
+var raioCam = 4.4;
+var alturaCam = 1.7;
+var alvo = new THREE.Vector3(0, 0.85, 0);
+
+function posicionaCamera() {
+  camera.position.set(Math.sin(anguloCam) * raioCam, alturaCam, Math.cos(anguloCam) * raioCam);
+  camera.lookAt(alvo);
+}
+posicionaCamera();
+
+/* ---------- interação: arrastar pra girar (funciona junto com a orbita automatica) ---------- */
+var arrastando = false;
+var arrastoAnterior = 0;
+var velocidadeManual = 0;
+
+function posX(e) { return e.touches ? e.touches[0].clientX : e.clientX; }
+
+canvas.addEventListener("pointerdown", function (e) {
+  arrastando = true;
+  arrastoAnterior = e.clientX;
+});
+window.addEventListener("pointermove", function (e) {
+  if (!arrastando) return;
+  var delta = e.clientX - arrastoAnterior;
+  arrastoAnterior = e.clientX;
+  anguloCam -= delta * 0.005;
+  velocidadeManual = -delta * 0.0006;
+});
+window.addEventListener("pointerup", function () { arrastando = false; });
+
+/* ---------- raycaster pra tocar nas molduras ---------- */
+var raycaster = new THREE.Raycaster();
+var ponteiro = new THREE.Vector2();
+var moveuDurante = false;
+
+canvas.addEventListener("pointerdown", function () { moveuDurante = false; });
+canvas.addEventListener("pointermove", function () { if (arrastando) moveuDurante = true; });
+canvas.addEventListener("pointerup", function (e) {
+  if (moveuDurante) return;
+  ponteiro.x = (e.clientX / window.innerWidth) * 2 - 1;
+  ponteiro.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  raycaster.setFromCamera(ponteiro, camera);
+  var alvos = [];
+  molduras.forEach(function (g) { alvos.push(g.children[0], g.children[1]); });
+  var hits = raycaster.intersectObjects(alvos);
+  if (hits.length) {
+    var grupo = hits[0].object.parent;
+    abrirModalMoldura(grupo.userData.chave);
+  }
+});
+
+/* ---------- resize ---------- */
+window.addEventListener("resize", function () {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+/* ---------- loop de animacao ---------- */
+var relogio = new THREE.Clock();
+var velaApagada = false;
+
+function animar() {
+  requestAnimationFrame(animar);
+  var dt = relogio.getDelta();
+  var t = relogio.getElapsedTime();
+
+  if (!reduceMotion) {
+    var velocidadeBase = 0.045;
+    anguloCam += (velocidadeBase + velocidadeManual) * dt;
+    velocidadeManual *= 0.9;
+    posicionaCamera();
+  } else if (arrastando || Math.abs(velocidadeManual) > 0.0001) {
+    posicionaCamera();
+  }
+
+  molduras.forEach(function (g) { g.lookAt(camera.position); });
+
+  if (!velaApagada) {
+    var tremor = Math.sin(t * 9) * 0.15 + Math.sin(t * 23) * 0.08;
+    luzVela.intensity = 1.6 + tremor;
+    chamaMesh.scale.setScalar(1 + tremor * 0.12);
+    brilhoSprite.material.opacity = 0.85 + tremor * 0.1;
+  }
+
+  renderer.render(scene, camera);
+}
+animar();
+
+/* ---------- UI: modais e soprar vela ---------- */
+var modalMoldura = document.getElementById("modalMoldura");
+function abrirModalMoldura(chave) {
+  var d = dados[chave];
+  document.getElementById("modalImg").src = d.foto;
+  document.getElementById("modalEyebrow").textContent = d.eyebrow;
+  document.getElementById("modalTitulo").textContent = d.titulo;
+  document.getElementById("modalTexto").textContent = d.texto;
+  modalMoldura.classList.add("aberto");
+}
+document.getElementById("fecharModal").addEventListener("click", function () {
+  modalMoldura.classList.remove("aberto");
+});
+modalMoldura.addEventListener("click", function (e) {
+  if (e.target === modalMoldura) modalMoldura.classList.remove("aberto");
+});
+
+var cartaOverlay = document.getElementById("carta-overlay");
+document.getElementById("btnSoprar").addEventListener("click", function () {
+  velaApagada = true;
+  var passos = 0;
+  var apagando = setInterval(function () {
+    passos++;
+    luzVela.intensity = Math.max(0, luzVela.intensity - 0.35);
+    chamaMesh.scale.multiplyScalar(0.7);
+    brilhoSprite.material.opacity *= 0.6;
+    if (passos > 6) {
+      clearInterval(apagando);
+      chamaMesh.visible = false;
+      brilhoSprite.visible = false;
+      luzVela.intensity = 0;
       cartaOverlay.classList.add("aberto");
-    }, 500);
-  });
-  document.getElementById("fecharCarta").addEventListener("click", function () {
-    cartaOverlay.classList.remove("aberto");
-  });
-  cartaOverlay.addEventListener("click", function (e) {
-    if (e.target === cartaOverlay) cartaOverlay.classList.remove("aberto");
-  });
+    }
+  }, 60);
+});
+document.getElementById("fecharCarta").addEventListener("click", function () {
+  cartaOverlay.classList.remove("aberto");
+});
+cartaOverlay.addEventListener("click", function (e) {
+  if (e.target === cartaOverlay) cartaOverlay.classList.remove("aberto");
+});
+
+/* ---------- some com a tela de carregando ---------- */
+var loadingEl = document.getElementById("loading");
+setTimeout(function () { loadingEl.classList.add("pronto"); }, 500);
 </script>
