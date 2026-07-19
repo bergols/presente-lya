@@ -316,6 +316,43 @@ renderer.toneMappingExposure = 1.15;
 var scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x140b10, 0.05);
 
+/* ---------- ambiente para reflexo real na cobertura (sem depender de addons externos) ---------- */
+function criarAmbiente() {
+  var envScene = new THREE.Scene();
+  var c = document.createElement("canvas");
+  c.width = 2; c.height = 64;
+  var ctx = c.getContext("2d");
+  var g = ctx.createLinearGradient(0, 0, 0, 64);
+  g.addColorStop(0, "#3a2230");
+  g.addColorStop(0.45, "#2a1620");
+  g.addColorStop(1, "#0a0608");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 2, 64);
+  var skyTex = new THREE.CanvasTexture(c);
+  skyTex.mapping = THREE.EquirectangularReflectionMapping;
+  var skyGeo = new THREE.SphereGeometry(18, 16, 16);
+  var skyMat = new THREE.MeshBasicMaterial({ map: skyTex, side: THREE.BackSide });
+  envScene.add(new THREE.Mesh(skyGeo, skyMat));
+
+  function painel(x, y, z, w, h, cor, intens) {
+    var mat = new THREE.MeshBasicMaterial({ color: cor });
+    mat.color.multiplyScalar(intens);
+    var mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
+    mesh.position.set(x, y, z);
+    mesh.lookAt(0, 1, 0);
+    envScene.add(mesh);
+  }
+  painel(3, 2.5, 2, 3, 3, 0xffcf9e, 2.2);
+  painel(-3, 1.8, -2, 2.5, 2.5, 0xb98adf, 1.4);
+  painel(0, 3.5, -3, 4, 2, 0xffe3c2, 1.6);
+
+  var pmrem = new THREE.PMREMGenerator(renderer);
+  var envMap = pmrem.fromScene(envScene, 0.03).texture;
+  pmrem.dispose();
+  return envMap;
+}
+scene.environment = criarAmbiente();
+
 var camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 100);
 
 /* ---------- mesa ---------- */
@@ -359,12 +396,37 @@ function perfilTier(rBase, rTopo, altura) {
   return pts;
 }
 
+/* textura procedural de rugosidade sutil, pra cobertura nao parecer plastico perfeito */
+function criarTexturaRugosidade() {
+  var c = document.createElement("canvas");
+  c.width = c.height = 256;
+  var ctx = c.getContext("2d");
+  ctx.fillStyle = "#808080";
+  ctx.fillRect(0, 0, 256, 256);
+  for (var i = 0; i < 3000; i++) {
+    var v = 100 + Math.random() * 110;
+    ctx.fillStyle = "rgba(" + v + "," + v + "," + v + ",0.5)";
+    var x = Math.random() * 256, y = Math.random() * 256;
+    var r = 0.6 + Math.random() * 1.4;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  var tex = new THREE.CanvasTexture(c);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(3, 2);
+  return tex;
+}
+var texturaRugosidade = criarTexturaRugosidade();
+
 function criarTier(rBase, rTopo, altura, y, cor, rugosidade, clearcoat) {
   var pts = perfilTier(rBase, rTopo, altura);
   var geo = new THREE.LatheGeometry(pts, 56);
   var mat = new THREE.MeshPhysicalMaterial({
     color: cor, roughness: rugosidade, metalness: 0.02,
-    clearcoat: clearcoat || 0, clearcoatRoughness: 0.3
+    roughnessMap: texturaRugosidade,
+    clearcoat: clearcoat || 0, clearcoatRoughness: 0.3,
+    envMapIntensity: 0.8
   });
   var mesh = new THREE.Mesh(geo, mat);
   mesh.position.y = y;
@@ -402,6 +464,30 @@ borda(0.99, yBase - 0.01, 0.04, 42, 0xf6e8d6);
 borda(0.735, yMid - 0.01, 0.033, 40, 0xf0d3da);
 borda(0.46, yTop - 0.01, 0.028, 36, 0xffffff);
 
+/* ---------- calda escorrendo no topo (drip cake) ---------- */
+function criarCalda(raio, yTopoCamada, qtd, cor) {
+  var mat = new THREE.MeshPhysicalMaterial({
+    color: cor, roughness: 0.25, clearcoat: 0.7, clearcoatRoughness: 0.15, envMapIntensity: 1
+  });
+  for (var i = 0; i < qtd; i++) {
+    var ang = (i / qtd) * Math.PI * 2 + Math.random() * 0.05;
+    var comprimento = 0.1 + Math.random() * 0.16;
+    var geo = new THREE.ConeGeometry(0.028 + Math.random() * 0.012, comprimento, 8);
+    var gota = new THREE.Mesh(geo, mat);
+    gota.position.set(Math.sin(ang) * raio, yTopoCamada - comprimento / 2, Math.cos(ang) * raio);
+    gota.rotation.x = Math.PI;
+    gota.castShadow = true;
+    cakeGroup.add(gota);
+  }
+  /* faixa fina cobrindo a borda de onde a calda "nasce" */
+  var faixaGeo = new THREE.TorusGeometry(raio, 0.02, 8, 48);
+  var faixa = new THREE.Mesh(faixaGeo, mat);
+  faixa.rotation.x = Math.PI / 2;
+  faixa.position.y = yTopoCamada;
+  cakeGroup.add(faixa);
+}
+criarCalda(0.5, yTop, 22, 0xfbf3e6);
+
 /* ---------- vela ---------- */
 var velaY = hBase + hMid + hTop;
 var velaGeo = new THREE.CylinderGeometry(0.032, 0.032, 0.3, 16);
@@ -411,13 +497,32 @@ velaMesh.position.y = velaY + 0.15;
 velaMesh.castShadow = true;
 cakeGroup.add(velaMesh);
 
-var chamaGeo = new THREE.SphereGeometry(0.072, 12, 12);
-chamaGeo.scale(1, 1.6, 1);
-var chamaMat = new THREE.MeshStandardMaterial({
-  color: 0xffb648, emissive: 0xff9a2e, emissiveIntensity: 2.4, roughness: 0.3
+/* chama: textura pintada (nucleo azulado, corpo laranja, ponta afilada) em vez de solido liso */
+function criarTexturaChama() {
+  var c = document.createElement("canvas");
+  c.width = 64; c.height = 96;
+  var ctx = c.getContext("2d");
+  var g = ctx.createRadialGradient(32, 68, 2, 32, 60, 34);
+  g.addColorStop(0, "rgba(255,255,255,0.95)");
+  g.addColorStop(0.18, "rgba(255,225,140,0.95)");
+  g.addColorStop(0.45, "rgba(255,150,50,0.9)");
+  g.addColorStop(0.8, "rgba(230,90,30,0.55)");
+  g.addColorStop(1, "rgba(200,60,20,0)");
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.moveTo(32, 2);
+  ctx.bezierCurveTo(10, 34, 14, 58, 32, 94);
+  ctx.bezierCurveTo(50, 58, 54, 34, 32, 2);
+  ctx.closePath();
+  ctx.fill();
+  return new THREE.CanvasTexture(c);
+}
+var chamaMat = new THREE.SpriteMaterial({
+  map: criarTexturaChama(), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
 });
-var chamaMesh = new THREE.Mesh(chamaGeo, chamaMat);
-chamaMesh.position.y = velaY + 0.3 + 0.085;
+var chamaMesh = new THREE.Sprite(chamaMat);
+chamaMesh.scale.set(0.11, 0.17, 1);
+chamaMesh.position.y = velaY + 0.3 + 0.1;
 cakeGroup.add(chamaMesh);
 
 function criarTexturaBrilho() {
