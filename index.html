@@ -35,22 +35,38 @@
     touch-action: none;
   }
 
+  .scrim-top {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 30vh;
+    z-index: 4;
+    background: linear-gradient(180deg, rgba(16,10,13,0.82) 0%, rgba(16,10,13,0.35) 55%, transparent 100%);
+    pointer-events: none;
+  }
+  .scrim-bottom {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 22vh;
+    z-index: 4;
+    background: linear-gradient(0deg, rgba(16,10,13,0.85) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
   .overlay-top {
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 5;
     text-align: center;
-    padding: 34px 20px 0;
+    padding: 28px 20px 0;
     pointer-events: none;
   }
   .eyebrow {
     font-family: var(--font-data);
-    font-size: 11px;
+    font-size: 10.5px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--flame);
-    margin: 0 0 10px;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+    margin: 0 0 8px;
   }
   h1 {
     font-family: var(--font-display);
@@ -58,20 +74,18 @@
     text-transform: uppercase;
     font-stretch: condensed;
     letter-spacing: 0.01em;
-    font-size: clamp(28px, 8vw, 42px);
-    line-height: 1.02;
-    margin: 0 0 10px;
+    font-size: clamp(24px, 6.4vw, 34px);
+    line-height: 1.05;
+    margin: 0 0 8px;
     text-wrap: balance;
-    text-shadow: 0 4px 18px rgba(0,0,0,0.65);
   }
   .lead {
-    font-size: 15px;
-    line-height: 1.55;
+    font-size: 13.5px;
+    line-height: 1.5;
     color: var(--paper-soft);
-    max-width: 36ch;
+    max-width: 32ch;
     margin: 0 auto;
     text-wrap: pretty;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.6);
   }
 
   .overlay-bottom {
@@ -79,18 +93,17 @@
     bottom: 0; left: 0; right: 0;
     z-index: 5;
     text-align: center;
-    padding: 0 20px 30px;
+    padding: 0 20px 28px;
     pointer-events: none;
   }
   .overlay-bottom > * { pointer-events: auto; }
 
   .hint {
     font-family: var(--font-data);
-    font-size: 11.5px;
+    font-size: 11px;
     letter-spacing: 0.05em;
     color: var(--paper-soft);
     margin: 0 0 14px;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
   }
 
   .btn {
@@ -163,14 +176,13 @@
     object-fit: cover;
   }
   .modal-body { padding: 20px 22px 24px; }
-  .modal-body .eyebrow { margin-bottom: 8px; text-shadow: none; }
+  .modal-body .eyebrow { margin-bottom: 8px; }
   .modal-body h2 {
     font-family: var(--font-display);
     text-transform: uppercase;
     font-stretch: condensed;
     font-size: 26px;
     margin: 0 0 10px;
-    text-shadow: none;
   }
   .modal-body p {
     font-size: 15.5px;
@@ -206,13 +218,15 @@
 </style>
 
 <canvas id="canvas3d"></canvas>
+<div class="scrim-top"></div>
+<div class="scrim-bottom"></div>
 
 <div class="loading" id="loading">carregando a mesa…</div>
 
 <div class="overlay-top">
   <p class="eyebrow">um bolo diferente esse ano</p>
   <h1>Feliz aniversário, Lya</h1>
-  <p class="lead">Gira a câmera olhando ao redor do bolo — cada moldura flutuando é um sonho teu. Toca nelas.</p>
+  <p class="lead">As molduras ao redor guardam sonhos teus. Toca em cada uma.</p>
 </div>
 
 <div class="overlay-bottom">
@@ -272,7 +286,7 @@ var dados = {
     eyebrow: "moldura 2 · Rio de Janeiro",
     titulo: "Stray Kids ao vivo",
     texto: "Lembra quando saiu a notícia e tu chorou de alegria na hora? Essa moldura é o dia em que isso vira palco de verdade, luz de verdade, grito de verdade — na plateia da frente.",
-    foto: "img/show.jpg"
+    foto: "img/show.png"
   },
   safari: {
     eyebrow: "moldura 3 · savana africana",
@@ -296,27 +310,62 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
 
 var scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x140b10, 0.045);
+scene.fog = new THREE.FogExp2(0x140b10, 0.05);
 
-var camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 100);
+var camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 100);
 
 /* ---------- mesa ---------- */
-var mesaGeo = new THREE.CircleGeometry(9, 48);
-var mesaMat = new THREE.MeshStandardMaterial({ color: 0x2a1b14, roughness: 0.85, metalness: 0.05 });
+var mesaGeo = new THREE.CircleGeometry(10, 64);
+var mesaMat = new THREE.MeshStandardMaterial({ color: 0x241812, roughness: 0.75, metalness: 0.08 });
 var mesa = new THREE.Mesh(mesaGeo, mesaMat);
 mesa.rotation.x = -Math.PI / 2;
 mesa.receiveShadow = true;
 scene.add(mesa);
 
-/* ---------- bolo ---------- */
+/* ---------- prato dourado ---------- */
+var pratoGeo = new THREE.CylinderGeometry(1.32, 1.4, 0.06, 56);
+var pratoMat = new THREE.MeshStandardMaterial({ color: 0xd4a94b, roughness: 0.28, metalness: 0.75 });
+var prato = new THREE.Mesh(pratoGeo, pratoMat);
+prato.position.y = 0.03;
+prato.castShadow = true;
+prato.receiveShadow = true;
+scene.add(prato);
+var pratoAro = new THREE.Mesh(
+  new THREE.TorusGeometry(1.32, 0.025, 12, 64),
+  new THREE.MeshStandardMaterial({ color: 0xe9c877, roughness: 0.2, metalness: 0.85 })
+);
+pratoAro.rotation.x = Math.PI / 2;
+pratoAro.position.y = 0.06;
+scene.add(pratoAro);
+
+/* ---------- bolo com silhueta curva (Lathe) ---------- */
 var cakeGroup = new THREE.Group();
+cakeGroup.position.y = 0.06;
 scene.add(cakeGroup);
 
-function tier(radiusTop, radiusBottom, height, y, color, roughness) {
-  var geo = new THREE.CylinderGeometry(radiusTop, radiusBottom, height, 48, 1, false);
-  var mat = new THREE.MeshStandardMaterial({ color: color, roughness: roughness, metalness: 0.02 });
+function perfilTier(rBase, rTopo, altura) {
+  var pts = [
+    new THREE.Vector2(rBase * 0.94, 0),
+    new THREE.Vector2(rBase, altura * 0.06),
+    new THREE.Vector2(rBase * 1.035, altura * 0.42),
+    new THREE.Vector2(rBase * 0.99, altura * 0.8),
+    new THREE.Vector2(rTopo * 1.02, altura * 0.93),
+    new THREE.Vector2(rTopo * 0.86, altura)
+  ];
+  return pts;
+}
+
+function criarTier(rBase, rTopo, altura, y, cor, rugosidade, clearcoat) {
+  var pts = perfilTier(rBase, rTopo, altura);
+  var geo = new THREE.LatheGeometry(pts, 56);
+  var mat = new THREE.MeshPhysicalMaterial({
+    color: cor, roughness: rugosidade, metalness: 0.02,
+    clearcoat: clearcoat || 0, clearcoatRoughness: 0.3
+  });
   var mesh = new THREE.Mesh(geo, mat);
   mesh.position.y = y;
   mesh.castShadow = true;
@@ -325,52 +374,59 @@ function tier(radiusTop, radiusBottom, height, y, color, roughness) {
   return mesh;
 }
 
-var yBase = 0.275;
-tier(1.02, 1.08, 0.55, yBase, 0x4a2b1a, 0.8);
-var yMid = 0.55 + 0.21;
-tier(0.76, 0.82, 0.42, yMid, 0xe8a1b0, 0.5);
-var yTop = 0.55 + 0.42 + 0.16;
-tier(0.46, 0.5, 0.32, yTop, 0xf3e4d0, 0.45);
+var hBase = 0.56, hMid = 0.44, hTop = 0.34;
+var yBase = 0;
+criarTier(1.05, 0.98, hBase, yBase, 0x4a2b1a, 0.7, 0.15);
+var yMid = hBase;
+criarTier(0.78, 0.72, hMid, yMid, 0xe8a1b0, 0.42, 0.35);
+var yTop = hBase + hMid;
+criarTier(0.48, 0.44, hTop, yTop, 0xf6e8d6, 0.35, 0.45);
 
-/* aneis de confeitaria entre as camadas */
-function anel(radius, y, color) {
-  var geo = new THREE.TorusGeometry(radius, 0.03, 10, 40);
-  var mat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.4 });
-  var mesh = new THREE.Mesh(geo, mat);
-  mesh.rotation.x = Math.PI / 2;
-  mesh.position.y = y;
-  mesh.castShadow = true;
-  cakeGroup.add(mesh);
+/* ---------- borda de pérolas de confeiteiro ---------- */
+function borda(radius, y, tamanho, qtd, cor) {
+  var geo = new THREE.SphereGeometry(tamanho, 10, 10);
+  var mat = new THREE.MeshPhysicalMaterial({ color: cor, roughness: 0.35, clearcoat: 0.5 });
+  var inst = new THREE.InstancedMesh(geo, mat, qtd);
+  inst.castShadow = true;
+  var dummy = new THREE.Object3D();
+  for (var i = 0; i < qtd; i++) {
+    var ang = (i / qtd) * Math.PI * 2;
+    dummy.position.set(Math.sin(ang) * radius, y, Math.cos(ang) * radius);
+    dummy.updateMatrix();
+    inst.setMatrixAt(i, dummy.matrix);
+  }
+  cakeGroup.add(inst);
 }
-anel(1.08, 0.55, 0xf3e4d0);
-anel(0.82, 0.55 + 0.42, 0xf3e4d0);
+borda(1.03, 0.02, 0.045, 46, 0xf6e8d6);
+borda(0.99, yBase - 0.01, 0.04, 42, 0xf6e8d6);
+borda(0.735, yMid - 0.01, 0.033, 40, 0xf0d3da);
+borda(0.46, yTop - 0.01, 0.028, 36, 0xffffff);
 
 /* ---------- vela ---------- */
-var velaY = 0.55 + 0.42 + 0.32;
-var velaGeo = new THREE.CylinderGeometry(0.035, 0.035, 0.32, 16);
-var velaMat = new THREE.MeshStandardMaterial({ color: 0xfff3df, roughness: 0.6 });
+var velaY = hBase + hMid + hTop;
+var velaGeo = new THREE.CylinderGeometry(0.032, 0.032, 0.3, 16);
+var velaMat = new THREE.MeshStandardMaterial({ color: 0xfff3df, roughness: 0.55 });
 var velaMesh = new THREE.Mesh(velaGeo, velaMat);
-velaMesh.position.y = velaY + 0.16;
+velaMesh.position.y = velaY + 0.15;
 velaMesh.castShadow = true;
 cakeGroup.add(velaMesh);
 
-var chamaGeo = new THREE.SphereGeometry(0.075, 12, 12);
+var chamaGeo = new THREE.SphereGeometry(0.072, 12, 12);
 chamaGeo.scale(1, 1.6, 1);
 var chamaMat = new THREE.MeshStandardMaterial({
-  color: 0xffb648, emissive: 0xff9a2e, emissiveIntensity: 2.2, roughness: 0.3
+  color: 0xffb648, emissive: 0xff9a2e, emissiveIntensity: 2.4, roughness: 0.3
 });
 var chamaMesh = new THREE.Mesh(chamaGeo, chamaMat);
-chamaMesh.position.y = velaY + 0.32 + 0.09;
+chamaMesh.position.y = velaY + 0.3 + 0.085;
 cakeGroup.add(chamaMesh);
 
-/* brilho aditivo ao redor da chama */
 function criarTexturaBrilho() {
   var c = document.createElement("canvas");
   c.width = c.height = 128;
   var ctx = c.getContext("2d");
   var g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
-  g.addColorStop(0, "rgba(255,200,120,0.9)");
-  g.addColorStop(0.4, "rgba(255,150,60,0.35)");
+  g.addColorStop(0, "rgba(255,205,130,0.95)");
+  g.addColorStop(0.4, "rgba(255,150,60,0.4)");
   g.addColorStop(1, "rgba(255,150,60,0)");
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, 128, 128);
@@ -379,27 +435,33 @@ function criarTexturaBrilho() {
 var brilhoSprite = new THREE.Sprite(new THREE.SpriteMaterial({
   map: criarTexturaBrilho(), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false
 }));
-brilhoSprite.scale.set(0.9, 0.9, 0.9);
-brilhoSprite.position.y = velaY + 0.32 + 0.09;
+brilhoSprite.scale.set(0.95, 0.95, 0.95);
+brilhoSprite.position.y = velaY + 0.3 + 0.085;
 cakeGroup.add(brilhoSprite);
 
-var luzVela = new THREE.PointLight(0xffb648, 1.6, 6, 2);
-luzVela.position.y = velaY + 0.32 + 0.14;
+var luzVela = new THREE.PointLight(0xffb648, 2.1, 6.5, 2);
+luzVela.position.y = velaY + 0.3 + 0.13;
 cakeGroup.add(luzVela);
 
-/* ---------- luz ambiente / de preenchimento ---------- */
-scene.add(new THREE.AmbientLight(0x554a55, 0.55));
-var luzChave = new THREE.DirectionalLight(0xffe3c2, 0.5);
+/* ---------- iluminação de cena ---------- */
+var hemi = new THREE.HemisphereLight(0x554258, 0x0d0709, 0.55);
+scene.add(hemi);
+
+var luzChave = new THREE.DirectionalLight(0xffe3c2, 0.4);
 luzChave.position.set(3, 5, 2);
 luzChave.castShadow = true;
 luzChave.shadow.mapSize.set(1024, 1024);
 scene.add(luzChave);
 
+var luzContorno = new THREE.PointLight(0xb98adf, 0.7, 12, 2);
+luzContorno.position.set(-3, 2.2, -3.2);
+scene.add(luzContorno);
+
 /* ---------- molduras flutuantes ---------- */
 var loader = new THREE.TextureLoader();
 var molduras = [];
 var chaves = ["monaco", "show", "safari", "melbourne"];
-var raioMoldura = 2.35;
+var raioMoldura = 2.5;
 
 chaves.forEach(function (chave, i) {
   var ang = (Math.PI / 2) * i + Math.PI / 4;
@@ -419,7 +481,7 @@ chaves.forEach(function (chave, i) {
   fotoMesh.position.z = 0.026;
   grupo.add(fotoMesh);
 
-  grupo.position.set(Math.sin(ang) * raioMoldura, 0.95, Math.cos(ang) * raioMoldura);
+  grupo.position.set(Math.sin(ang) * raioMoldura, 1.02, Math.cos(ang) * raioMoldura);
   grupo.userData.chave = chave;
   scene.add(grupo);
   molduras.push(grupo);
@@ -427,9 +489,9 @@ chaves.forEach(function (chave, i) {
 
 /* ---------- câmera: orbita lenta tipo still de filme ---------- */
 var anguloCam = 0.3;
-var raioCam = 4.4;
-var alturaCam = 1.7;
-var alvo = new THREE.Vector3(0, 0.85, 0);
+var raioCam = 5.3;
+var alturaCam = 2.0;
+var alvo = new THREE.Vector3(0, 0.55, 0);
 
 function posicionaCamera() {
   camera.position.set(Math.sin(anguloCam) * raioCam, alturaCam, Math.cos(anguloCam) * raioCam);
@@ -437,12 +499,10 @@ function posicionaCamera() {
 }
 posicionaCamera();
 
-/* ---------- interação: arrastar pra girar (funciona junto com a orbita automatica) ---------- */
+/* ---------- interação: arrastar pra girar ---------- */
 var arrastando = false;
 var arrastoAnterior = 0;
 var velocidadeManual = 0;
-
-function posX(e) { return e.touches ? e.touches[0].clientX : e.clientX; }
 
 canvas.addEventListener("pointerdown", function (e) {
   arrastando = true;
@@ -507,7 +567,7 @@ function animar() {
 
   if (!velaApagada) {
     var tremor = Math.sin(t * 9) * 0.15 + Math.sin(t * 23) * 0.08;
-    luzVela.intensity = 1.6 + tremor;
+    luzVela.intensity = 2.1 + tremor;
     chamaMesh.scale.setScalar(1 + tremor * 0.12);
     brilhoSprite.material.opacity = 0.85 + tremor * 0.1;
   }
@@ -539,7 +599,7 @@ document.getElementById("btnSoprar").addEventListener("click", function () {
   var passos = 0;
   var apagando = setInterval(function () {
     passos++;
-    luzVela.intensity = Math.max(0, luzVela.intensity - 0.35);
+    luzVela.intensity = Math.max(0, luzVela.intensity - 0.4);
     chamaMesh.scale.multiplyScalar(0.7);
     brilhoSprite.material.opacity *= 0.6;
     if (passos > 6) {
