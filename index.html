@@ -384,184 +384,402 @@ pratoAro.rotation.x = Math.PI / 2;
 pratoAro.position.y = 0.06;
 scene.add(pratoAro);
 
-/* ---------- bolo com silhueta curva (Lathe) ---------- */
+/* ---------- bolo redesenhado: mais elegante, proporcional e detalhado ---------- */
 var cakeGroup = new THREE.Group();
 cakeGroup.position.y = 0.06;
 scene.add(cakeGroup);
 
-function perfilTier(rBase, rTopo, altura) {
-  var pts = [
-    new THREE.Vector2(rBase * 0.94, 0),
-    new THREE.Vector2(rBase, altura * 0.06),
-    new THREE.Vector2(rBase * 1.035, altura * 0.42),
-    new THREE.Vector2(rBase * 0.99, altura * 0.8),
-    new THREE.Vector2(rTopo * 1.02, altura * 0.93),
-    new THREE.Vector2(rTopo * 0.86, altura)
-  ];
-  return pts;
-}
-
-/* textura procedural de rugosidade sutil, pra cobertura nao parecer plastico perfeito */
+/* textura bem sutil para a cobertura não parecer plástico */
 function criarTexturaRugosidade() {
   var c = document.createElement("canvas");
   c.width = c.height = 256;
   var ctx = c.getContext("2d");
-  ctx.fillStyle = "#808080";
+  ctx.fillStyle = "#8a8a8a";
   ctx.fillRect(0, 0, 256, 256);
-  for (var i = 0; i < 3000; i++) {
-    var v = 100 + Math.random() * 110;
-    ctx.fillStyle = "rgba(" + v + "," + v + "," + v + ",0.5)";
-    var x = Math.random() * 256, y = Math.random() * 256;
-    var r = 0.6 + Math.random() * 1.4;
+
+  for (var i = 0; i < 2200; i++) {
+    var v = 105 + Math.random() * 90;
+    ctx.fillStyle = "rgba(" + v + "," + v + "," + v + ",0.22)";
+    var x = Math.random() * 256;
+    var y = Math.random() * 256;
+    var r = 0.4 + Math.random() * 1.1;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fill();
   }
+
   var tex = new THREE.CanvasTexture(c);
   tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.repeat.set(3, 2);
+  tex.repeat.set(3.5, 2.5);
   return tex;
 }
+
 var texturaRugosidade = criarTexturaRugosidade();
 
-function criarTier(rBase, rTopo, altura, y, cor, roughness, clearcoat) {
-  var pts = perfilTier(rBase, rTopo, altura);
-  var geo = new THREE.LatheGeometry(pts, 56);
-  var mat = new THREE.MeshPhysicalMaterial({
-    color: cor, 
-    roughness: roughness * 0.8, 
-    metalness: 0.05,
+function materialCobertura(cor, roughness, clearcoat) {
+  return new THREE.MeshPhysicalMaterial({
+    color: cor,
+    roughness: roughness,
+    metalness: 0.015,
     roughnessMap: texturaRugosidade,
-    clearcoat: clearcoat || 0.4, 
-    clearcoatRoughness: 0.15,     
-    envMapIntensity: 1.4          
+    clearcoat: clearcoat,
+    clearcoatRoughness: 0.22,
+    envMapIntensity: 1.15
   });
-  var mesh = new THREE.Mesh(geo, mat);
-  mesh.position.y = y;
-  mesh.castShadow = true;
-  mesh.receiveShadow = true;
-  cakeGroup.add(mesh);
-  return mesh;
 }
 
-var hBase = 0.56, hMid = 0.44, hTop = 0.34;
-var yBase = 0;
-// Ajuste sutil na sofisticação das cores: Chocolate Profundo, Rosa Pastel Elegante e Creme Marfim Acetinado
-criarTier(1.05, 0.98, hBase, yBase, 0x2b170f, 0.7, 0.15);
-var yMid = hBase;
-criarTier(0.78, 0.72, hMid, yMid, 0xf3bccc, 0.42, 0.35);
-var yTop = hBase + hMid;
-criarTier(0.48, 0.44, hTop, yTop, 0xf6e8d6, 0.35, 0.45);
+/* perfil com quinas levemente arredondadas */
+function perfilTier(raio, altura) {
+  return [
+    new THREE.Vector2(raio * 0.965, 0),
+    new THREE.Vector2(raio * 0.995, 0.018),
+    new THREE.Vector2(raio, 0.045),
+    new THREE.Vector2(raio, altura - 0.045),
+    new THREE.Vector2(raio * 0.995, altura - 0.018),
+    new THREE.Vector2(raio * 0.965, altura)
+  ];
+}
 
-/* ---------- borda de pérolas de confeiteiro ---------- */
-function borda(radius, y, tamanho, qtd, cor) {
-  var geo = new THREE.SphereGeometry(tamanho, 10, 10);
-  var mat = new THREE.MeshPhysicalMaterial({ color: cor, roughness: 0.35, clearcoat: 0.5 });
+function criarTier(raio, altura, y, cor, roughness, clearcoat) {
+  var mat = materialCobertura(cor, roughness, clearcoat);
+
+  var lateral = new THREE.Mesh(
+    new THREE.LatheGeometry(perfilTier(raio, altura), 72),
+    mat
+  );
+  lateral.position.y = y;
+  lateral.castShadow = true;
+  lateral.receiveShadow = true;
+  cakeGroup.add(lateral);
+
+  /* tampa superior: resolve o aspecto “oco” que deixava o bolo estranho */
+  var topo = new THREE.Mesh(
+    new THREE.CircleGeometry(raio * 0.965, 72),
+    mat
+  );
+  topo.rotation.x = -Math.PI / 2;
+  topo.position.y = y + altura + 0.001;
+  topo.castShadow = true;
+  topo.receiveShadow = true;
+  cakeGroup.add(topo);
+
+  return { lateral: lateral, topo: topo };
+}
+
+var hBase = 0.52;
+var hMid = 0.43;
+var hTop = 0.36;
+var yBase = 0;
+var yMid = hBase;
+var yTop = hBase + hMid;
+
+/* paleta: chocolate amargo, rosa antigo e marfim */
+criarTier(1.04, hBase, yBase, 0x321b14, 0.52, 0.18);
+criarTier(0.79, hMid, yMid, 0xdca3ad, 0.43, 0.30);
+criarTier(0.54, hTop, yTop, 0xf5e8d8, 0.38, 0.38);
+
+function criarFaixa(raio, y, espessura, cor, metalness) {
+  var faixa = new THREE.Mesh(
+    new THREE.TorusGeometry(raio, espessura, 12, 84),
+    new THREE.MeshPhysicalMaterial({
+      color: cor,
+      roughness: metalness ? 0.22 : 0.38,
+      metalness: metalness ? 0.72 : 0.02,
+      clearcoat: metalness ? 0.25 : 0.45
+    })
+  );
+  faixa.rotation.x = Math.PI / 2;
+  faixa.position.y = y;
+  faixa.castShadow = true;
+  cakeGroup.add(faixa);
+}
+
+/* acabamentos delicados nas bases */
+criarFaixa(1.01, 0.035, 0.018, 0x5a2c20, false);
+criarFaixa(0.765, yMid + 0.028, 0.014, 0xf0cbd1, false);
+criarFaixa(0.515, yTop + 0.025, 0.012, 0xffffff, false);
+
+function bordaPerolas(raio, y, tamanho, qtd, cor) {
+  var geo = new THREE.SphereGeometry(tamanho, 14, 14);
+  var mat = new THREE.MeshPhysicalMaterial({
+    color: cor,
+    roughness: 0.25,
+    clearcoat: 0.65,
+    clearcoatRoughness: 0.12
+  });
   var inst = new THREE.InstancedMesh(geo, mat, qtd);
   inst.castShadow = true;
   var dummy = new THREE.Object3D();
+
   for (var i = 0; i < qtd; i++) {
     var ang = (i / qtd) * Math.PI * 2;
-    dummy.position.set(Math.sin(ang) * radius, y, Math.cos(ang) * radius);
+    dummy.position.set(Math.sin(ang) * raio, y, Math.cos(ang) * raio);
     dummy.updateMatrix();
     inst.setMatrixAt(i, dummy.matrix);
   }
   cakeGroup.add(inst);
 }
-borda(1.03, 0.02, 0.045, 46, 0xf6e8d6);
-borda(0.99, yBase - 0.01, 0.04, 42, 0xf6e8d6);
-borda(0.735, yMid - 0.01, 0.033, 40, 0xf0d3da);
-borda(0.46, yTop - 0.01, 0.028, 36, 0xffffff);
 
-/* ---------- calda escorrendo no topo (drip cake) ---------- */
-function criarCalda(raio, yTopoCamada, qtd, cor) {
+bordaPerolas(1.015, 0.045, 0.026, 74, 0x6b3728);
+bordaPerolas(0.765, yMid + 0.035, 0.023, 64, 0xf0cad2);
+bordaPerolas(0.515, yTop + 0.032, 0.021, 54, 0xfffbf4);
+
+/* guirlanda de pérolas douradas ao redor do andar rosa */
+function adicionarGuirlanda(raio, yCentro, ondas, qtd) {
+  var geo = new THREE.SphereGeometry(0.012, 10, 10);
   var mat = new THREE.MeshPhysicalMaterial({
-    color: cor, roughness: 0.25, clearcoat: 0.7, clearcoatRoughness: 0.15, envMapIntensity: 1
+    color: 0xd7ad55,
+    roughness: 0.2,
+    metalness: 0.82
   });
-  for (var i = 0; i < qtd; i++) {
-    var ang = (i / qtd) * Math.PI * 2 + Math.random() * 0.05;
-    var comprimento = 0.1 + Math.random() * 0.16;
-    var geo = new THREE.ConeGeometry(0.028 + Math.random() * 0.012, comprimento, 8);
-    var gota = new THREE.Mesh(geo, mat);
-    gota.position.set(Math.sin(ang) * raio, yTopoCamada - comprimento / 2, Math.cos(ang) * raio);
-    gota.rotation.x = Math.PI;
-    gota.castShadow = true;
-    cakeGroup.add(gota);
-  }
-  var faixaGeo = new THREE.TorusGeometry(raio, 0.02, 8, 48);
-  var faixa = new THREE.Mesh(faixaGeo, mat);
-  faixa.rotation.x = Math.PI / 2;
-  faixa.position.y = yTopoCamada;
-  cakeGroup.add(faixa);
-}
-criarCalda(0.5, yTop, 22, 0xfbf3e6);
-
-/* ---------- Adição de Morangos no Topo 🍓 ---------- */
-function adicionarMorangosNoTopo(raio, yTopo, qtd) {
-  var morangoGeo = new THREE.ConeGeometry(0.04, 0.07, 8);
-  var morangoMat = new THREE.MeshPhysicalMaterial({
-    color: 0xc1121f, 
-    roughness: 0.3,
-    clearcoat: 0.6,
-    clearcoatRoughness: 0.2,
-    envMapIntensity: 1.2
-  });
+  var inst = new THREE.InstancedMesh(geo, mat, qtd);
+  var dummy = new THREE.Object3D();
 
   for (var i = 0; i < qtd; i++) {
     var ang = (i / qtd) * Math.PI * 2;
-    var morango = new THREE.Mesh(morangoGeo, morangoMat);
-    var posX = Math.sin(ang) * raio;
-    var posZ = Math.cos(ang) * raio;
-    
-    morango.position.set(posX, yTopo + 0.035, posZ);
-    morango.rotation.z = -Math.sin(ang) * 0.3;
-    morango.rotation.x = Math.cos(ang) * 0.3;
-    morango.castShadow = true;
-    
-    cakeGroup.add(morango);
-  }
-}
-adicionarMorangosNoTopo(0.32, yTop, 8);
-
-/* ---------- Granulados Coloridos (Sprinkles) 🍫 ---------- */
-function adicionarGranulados(raio, yMin, yMax, qtd, cores) {
-  var geo = new THREE.CylinderGeometry(0.006, 0.006, 0.03, 4);
-  geo.rotateZ(Math.PI / 2);
-  
-  var materiais = cores.map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.4 }));
-  
-  for (var i = 0; i < qtd; i++) {
-    var matSorteado = materiais[Math.floor(Math.random() * materiais.length)];
-    var mesh = new THREE.Mesh(geo, matSorteado);
-    
-    var ang = Math.random() * Math.PI * 2;
-    var altura = yMin + Math.random() * (yMax - yMin);
-    
-    mesh.position.set(
-      Math.sin(ang) * (raio + 0.01),
-      altura,
-      Math.cos(ang) * (raio + 0.01)
+    var onda = Math.pow(Math.sin(ang * ondas), 2);
+    dummy.position.set(
+      Math.sin(ang) * (raio + 0.009),
+      yCentro - onda * 0.12,
+      Math.cos(ang) * (raio + 0.009)
     );
-    
-    mesh.rotation.y = -ang + (Math.random() * 0.5 - 0.25);
-    mesh.rotation.z = Math.random() * Math.PI;
-    mesh.castShadow = true;
-    
-    cakeGroup.add(mesh);
+    dummy.scale.setScalar(i % 7 === 0 ? 1.55 : 1);
+    dummy.updateMatrix();
+    inst.setMatrixAt(i, dummy.matrix);
   }
+  inst.castShadow = true;
+  cakeGroup.add(inst);
 }
-var coresGranulado = [0xffb648, 0xffffff, 0xe8a1b0, 0x4a2b1a];
-adicionarGranulados(0.76, yMid + 0.05, yMid + hMid - 0.05, 35, coresGranulado);
 
+adicionarGuirlanda(0.79, yMid + hMid * 0.68, 3, 150);
+
+/* drip do topo, agora na altura certa */
+function criarCaldaElegante(raio, ySuperficie, cor) {
+  var mat = new THREE.MeshPhysicalMaterial({
+    color: cor,
+    roughness: 0.24,
+    clearcoat: 0.72,
+    clearcoatRoughness: 0.12,
+    envMapIntensity: 1.1
+  });
+
+  var comprimentos = [0.15, 0.10, 0.19, 0.08, 0.13, 0.21, 0.11, 0.16, 0.09, 0.18, 0.12, 0.07];
+  for (var i = 0; i < comprimentos.length; i++) {
+    var ang = (i / comprimentos.length) * Math.PI * 2 + 0.08;
+    var comprimento = comprimentos[i];
+    var largura = 0.022 + (i % 3) * 0.004;
+
+    var corpo = new THREE.Mesh(
+      new THREE.CylinderGeometry(largura, largura * 0.92, comprimento, 12),
+      mat
+    );
+    corpo.position.set(
+      Math.sin(ang) * raio,
+      ySuperficie - comprimento / 2 + 0.01,
+      Math.cos(ang) * raio
+    );
+    corpo.castShadow = true;
+    cakeGroup.add(corpo);
+
+    var gota = new THREE.Mesh(
+      new THREE.SphereGeometry(largura * 1.05, 12, 12),
+      mat
+    );
+    gota.position.set(
+      Math.sin(ang) * raio,
+      ySuperficie - comprimento + 0.012,
+      Math.cos(ang) * raio
+    );
+    gota.scale.y = 1.25;
+    gota.castShadow = true;
+    cakeGroup.add(gota);
+  }
+
+  criarFaixa(raio, ySuperficie - 0.012, 0.025, cor, false);
+}
+
+var topoDoBolo = yTop + hTop;
+criarCaldaElegante(0.535, topoDoBolo, 0xfff7ec);
+
+/* morangos mais naturais: corpo arredondado, folhas e sementes */
+function criarMorango(x, y, z, escala, rotY, inclinado) {
+  var grupo = new THREE.Group();
+
+  var corpo = new THREE.Mesh(
+    new THREE.SphereGeometry(0.105, 24, 20),
+    new THREE.MeshPhysicalMaterial({
+      color: 0xc72e3b,
+      roughness: 0.34,
+      clearcoat: 0.58,
+      clearcoatRoughness: 0.15
+    })
+  );
+  corpo.scale.set(0.82, 1.12, 0.82);
+  corpo.position.y = 0.055;
+  corpo.castShadow = true;
+  grupo.add(corpo);
+
+  /* leve ponta inferior */
+  var ponta = new THREE.Mesh(
+    new THREE.ConeGeometry(0.055, 0.095, 20),
+    corpo.material
+  );
+  ponta.position.y = -0.035;
+  ponta.rotation.z = Math.PI;
+  ponta.castShadow = true;
+  grupo.add(ponta);
+
+  var folhaMat = new THREE.MeshStandardMaterial({
+    color: 0x496f39,
+    roughness: 0.62,
+    side: THREE.DoubleSide
+  });
+
+  for (var i = 0; i < 5; i++) {
+    var folha = new THREE.Mesh(new THREE.CircleGeometry(0.045, 3), folhaMat);
+    var a = (i / 5) * Math.PI * 2;
+    folha.rotation.x = -Math.PI / 2;
+    folha.rotation.z = a;
+    folha.position.set(Math.sin(a) * 0.03, 0.155, Math.cos(a) * 0.03);
+    grupo.add(folha);
+  }
+
+  var seedGeo = new THREE.SphereGeometry(0.006, 6, 6);
+  var seedMat = new THREE.MeshStandardMaterial({ color: 0xffd27d, roughness: 0.45 });
+  for (var s = 0; s < 13; s++) {
+    var aSeed = (s / 13) * Math.PI * 2 + (s % 2) * 0.18;
+    var yy = -0.005 + (s % 4) * 0.034;
+    var rr = 0.086 * Math.sqrt(Math.max(0.15, 1 - Math.pow((yy - 0.055) / 0.13, 2)));
+    var seed = new THREE.Mesh(seedGeo, seedMat);
+    seed.position.set(Math.sin(aSeed) * rr, yy + 0.055, Math.cos(aSeed) * rr);
+    grupo.add(seed);
+  }
+
+  grupo.position.set(x, y, z);
+  grupo.scale.setScalar(escala);
+  grupo.rotation.y = rotY;
+  grupo.rotation.z = inclinado;
+  cakeGroup.add(grupo);
+}
+
+/* arranjo assimétrico, mais bonito que o círculo uniforme */
+criarMorango(-0.23, topoDoBolo + 0.08, 0.02, 1.00, 0.2, -0.25);
+criarMorango(-0.08, topoDoBolo + 0.09, -0.11, 0.92, 1.4, 0.18);
+criarMorango(0.10, topoDoBolo + 0.085, -0.08, 1.08, 2.1, -0.08);
+criarMorango(0.24, topoDoBolo + 0.075, 0.03, 0.88, 2.8, 0.23);
+criarMorango(0.06, topoDoBolo + 0.07, 0.14, 0.82, 0.8, -0.3);
+criarMorango(-0.13, topoDoBolo + 0.065, 0.15, 0.78, 2.4, 0.24);
+
+/* pequenas pérolas no topo */
+function adicionarPerolasTopo() {
+  var cores = [0xf7d9dd, 0xfffbf4, 0xd6aa4b];
+  var posicoes = [
+    [-0.34, 0.08], [-0.29, -0.18], [-0.01, -0.28],
+    [0.30, -0.15], [0.35, 0.10], [0.22, 0.24], [-0.22, 0.25]
+  ];
+
+  posicoes.forEach(function (p, i) {
+    var esfera = new THREE.Mesh(
+      new THREE.SphereGeometry(i % 3 === 0 ? 0.027 : 0.020, 14, 14),
+      new THREE.MeshPhysicalMaterial({
+        color: cores[i % cores.length],
+        roughness: 0.22,
+        metalness: i % 3 === 2 ? 0.72 : 0.02,
+        clearcoat: 0.55
+      })
+    );
+    esfera.position.set(p[0], topoDoBolo + 0.035, p[1]);
+    esfera.castShadow = true;
+    cakeGroup.add(esfera);
+  });
+}
+
+adicionarPerolasTopo();
+
+/* rosas de chocolate estilizadas no andar inferior */
+function criarRosaChocolate(ang, y, escala) {
+  var grupo = new THREE.Group();
+  var mat = new THREE.MeshPhysicalMaterial({
+    color: 0x4b241b,
+    roughness: 0.46,
+    clearcoat: 0.26
+  });
+
+  var miolo = new THREE.Mesh(new THREE.SphereGeometry(0.045, 18, 18), mat);
+  grupo.add(miolo);
+
+  for (var camada = 0; camada < 3; camada++) {
+    var qtd = 5 + camada * 2;
+    for (var i = 0; i < qtd; i++) {
+      var a = (i / qtd) * Math.PI * 2 + camada * 0.35;
+      var petala = new THREE.Mesh(new THREE.SphereGeometry(0.055, 16, 12), mat);
+      petala.scale.set(1.05, 0.52, 0.34);
+      petala.position.set(Math.cos(a) * (0.045 + camada * 0.028), Math.sin(a) * (0.045 + camada * 0.028), camada * 0.014);
+      petala.rotation.z = a;
+      petala.castShadow = true;
+      grupo.add(petala);
+    }
+  }
+
+  var raio = 1.047;
+  grupo.position.set(Math.sin(ang) * raio, y, Math.cos(ang) * raio);
+  grupo.lookAt(0, y, 0);
+  grupo.rotateY(Math.PI);
+  grupo.scale.setScalar(escala);
+  cakeGroup.add(grupo);
+}
+
+criarRosaChocolate(-0.42, 0.25, 1.0);
+criarRosaChocolate(-0.18, 0.18, 0.78);
+criarRosaChocolate(-0.65, 0.13, 0.66);
+
+/* pontinhos dourados discretos */
+function adicionarPoeiraDourada(raio, yMin, yMax, qtd) {
+  var geo = new THREE.SphereGeometry(0.007, 7, 7);
+  var mat = new THREE.MeshStandardMaterial({ color: 0xd6aa4b, roughness: 0.22, metalness: 0.8 });
+  var inst = new THREE.InstancedMesh(geo, mat, qtd);
+  var dummy = new THREE.Object3D();
+
+  for (var i = 0; i < qtd; i++) {
+    var ang = Math.random() * Math.PI * 2;
+    dummy.position.set(
+      Math.sin(ang) * (raio + 0.009),
+      yMin + Math.random() * (yMax - yMin),
+      Math.cos(ang) * (raio + 0.009)
+    );
+    dummy.scale.setScalar(0.65 + Math.random() * 0.8);
+    dummy.updateMatrix();
+    inst.setMatrixAt(i, dummy.matrix);
+  }
+  cakeGroup.add(inst);
+}
+
+adicionarPoeiraDourada(1.04, 0.08, hBase - 0.07, 42);
+adicionarPoeiraDourada(0.79, yMid + 0.08, yMid + hMid - 0.07, 26);
 
 /* ---------- vela ---------- */
 var velaY = hBase + hMid + hTop;
-var velaGeo = new THREE.CylinderGeometry(0.032, 0.032, 0.3, 16);
-var velaMat = new THREE.MeshStandardMaterial({ color: 0xfff3df, roughness: 0.55 });
+var velaGeo = new THREE.CylinderGeometry(0.032, 0.032, 0.3, 24);
+var velaMat = new THREE.MeshPhysicalMaterial({
+  color: 0xfff5e8,
+  roughness: 0.42,
+  clearcoat: 0.28
+});
 var velaMesh = new THREE.Mesh(velaGeo, velaMat);
 velaMesh.position.y = velaY + 0.15;
 velaMesh.castShadow = true;
 cakeGroup.add(velaMesh);
+
+/* anéis dourados dão um acabamento mais elegante à vela */
+for (var faixaVela = 0; faixaVela < 6; faixaVela++) {
+  var anel = new THREE.Mesh(
+    new THREE.TorusGeometry(0.0335, 0.004, 8, 24),
+    new THREE.MeshStandardMaterial({ color: 0xd6aa4b, roughness: 0.22, metalness: 0.72 })
+  );
+  anel.rotation.x = Math.PI / 2;
+  anel.position.y = velaY + 0.035 + faixaVela * 0.052;
+  cakeGroup.add(anel);
+}
 
 /* chama: textura pintada (nucleo azulado, corpo laranja, ponta afilada) */
 function criarTexturaChama() {
@@ -615,16 +833,16 @@ luzVela.position.y = velaY + 0.3 + 0.13;
 cakeGroup.add(luzVela);
 
 /* ---------- iluminação de cena ---------- */
-var hemi = new THREE.HemisphereLight(0x554258, 0x0d0709, 0.55);
+var hemi = new THREE.HemisphereLight(0x6b536f, 0x0d0709, 0.72);
 scene.add(hemi);
 
-var luzChave = new THREE.DirectionalLight(0xffe3c2, 0.4);
+var luzChave = new THREE.DirectionalLight(0xffe3c2, 0.72);
 luzChave.position.set(3, 5, 2);
 luzChave.castShadow = true;
 luzChave.shadow.mapSize.set(1024, 1024);
 scene.add(luzChave);
 
-var luzContorno = new THREE.PointLight(0xb98adf, 0.7, 12, 2);
+var luzContorno = new THREE.PointLight(0xd59ac7, 0.9, 12, 2);
 luzContorno.position.set(-3, 2.2, -3.2);
 scene.add(luzContorno);
 
