@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
 <meta charset="utf-8">
 <title>Feliz aniversário, Lya 🎂</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -216,6 +219,8 @@
     margin-top: 4px;
   }
 </style>
+</head>
+<body>
 
 <canvas id="canvas3d"></canvas>
 <div class="scrim-top"></div>
@@ -253,7 +258,7 @@
     <div class="modal-body">
       <p class="eyebrow">a vela apagou · faz o pedido</p>
       <div class="carta-texto">
-        <p>Mônaco, Rio, savana, Melbourne — quatro sonhos teus, guardados em moldura. Ainda são só fotos numa tela, eu sei. Mas cada lugar eu escolhi de verdade, do jeito que tu foi contando ao longo desse ano, sem nem perceber.</p>
+        <p>Mônaco, Rio, savana, Melbourne — quatro sonhos teus, guardados in moldura. Ainda são só fotos numa tela, eu sei. Mas cada lugar eu escolhi de verdade, do jeito que tu foi contando ao longo desse ano, sem nem perceber.</p>
         <p>Um dia a gente visita esses lugares de verdade. Até lá, feliz aniversário — que seja o ano em que pelo menos um desses sonhos sai do lugar.</p>
       </div>
       <p class="assinatura">— do fã nº 1 da diva 🖤</p>
@@ -419,14 +424,17 @@ function criarTexturaRugosidade() {
 }
 var texturaRugosidade = criarTexturaRugosidade();
 
-function criarTier(rBase, rTopo, altura, y, cor, rugosidade, clearcoat) {
+function criarTier(rBase, rTopo, altura, y, cor, roughness, clearcoat) {
   var pts = perfilTier(rBase, rTopo, altura);
   var geo = new THREE.LatheGeometry(pts, 56);
   var mat = new THREE.MeshPhysicalMaterial({
-    color: cor, roughness: rugosidade, metalness: 0.02,
+    color: cor, 
+    roughness: roughness * 0.8, 
+    metalness: 0.05,
     roughnessMap: texturaRugosidade,
-    clearcoat: clearcoat || 0, clearcoatRoughness: 0.3,
-    envMapIntensity: 0.8
+    clearcoat: clearcoat || 0.4, 
+    clearcoatRoughness: 0.15,     
+    envMapIntensity: 1.4          
   });
   var mesh = new THREE.Mesh(geo, mat);
   mesh.position.y = y;
@@ -438,9 +446,10 @@ function criarTier(rBase, rTopo, altura, y, cor, rugosidade, clearcoat) {
 
 var hBase = 0.56, hMid = 0.44, hTop = 0.34;
 var yBase = 0;
-criarTier(1.05, 0.98, hBase, yBase, 0x4a2b1a, 0.7, 0.15);
+// Ajuste sutil na sofisticação das cores: Chocolate Profundo, Rosa Pastel Elegante e Creme Marfim Acetinado
+criarTier(1.05, 0.98, hBase, yBase, 0x2b170f, 0.7, 0.15);
 var yMid = hBase;
-criarTier(0.78, 0.72, hMid, yMid, 0xe8a1b0, 0.42, 0.35);
+criarTier(0.78, 0.72, hMid, yMid, 0xf3bccc, 0.42, 0.35);
 var yTop = hBase + hMid;
 criarTier(0.48, 0.44, hTop, yTop, 0xf6e8d6, 0.35, 0.45);
 
@@ -479,7 +488,6 @@ function criarCalda(raio, yTopoCamada, qtd, cor) {
     gota.castShadow = true;
     cakeGroup.add(gota);
   }
-  /* faixa fina cobrindo a borda de onde a calda "nasce" */
   var faixaGeo = new THREE.TorusGeometry(raio, 0.02, 8, 48);
   var faixa = new THREE.Mesh(faixaGeo, mat);
   faixa.rotation.x = Math.PI / 2;
@@ -487,6 +495,64 @@ function criarCalda(raio, yTopoCamada, qtd, cor) {
   cakeGroup.add(faixa);
 }
 criarCalda(0.5, yTop, 22, 0xfbf3e6);
+
+/* ---------- Adição de Morangos no Topo 🍓 ---------- */
+function adicionarMorangosNoTopo(raio, yTopo, qtd) {
+  var morangoGeo = new THREE.ConeGeometry(0.04, 0.07, 8);
+  var morangoMat = new THREE.MeshPhysicalMaterial({
+    color: 0xc1121f, 
+    roughness: 0.3,
+    clearcoat: 0.6,
+    clearcoatRoughness: 0.2,
+    envMapIntensity: 1.2
+  });
+
+  for (var i = 0; i < qtd; i++) {
+    var ang = (i / qtd) * Math.PI * 2;
+    var morango = new THREE.Mesh(morangoGeo, morangoMat);
+    var posX = Math.sin(ang) * raio;
+    var posZ = Math.cos(ang) * raio;
+    
+    morango.position.set(posX, yTopo + 0.035, posZ);
+    morango.rotation.z = -Math.sin(ang) * 0.3;
+    morango.rotation.x = Math.cos(ang) * 0.3;
+    morango.castShadow = true;
+    
+    cakeGroup.add(morango);
+  }
+}
+adicionarMorangosNoTopo(0.32, yTop, 8);
+
+/* ---------- Granulados Coloridos (Sprinkles) 🍫 ---------- */
+function adicionarGranulados(raio, yMin, yMax, qtd, cores) {
+  var geo = new THREE.CylinderGeometry(0.006, 0.006, 0.03, 4);
+  geo.rotateZ(Math.PI / 2);
+  
+  var materiais = cores.map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.4 }));
+  
+  for (var i = 0; i < qtd; i++) {
+    var matSorteado = materiais[Math.floor(Math.random() * materiais.length)];
+    var mesh = new THREE.Mesh(geo, matSorteado);
+    
+    var ang = Math.random() * Math.PI * 2;
+    var altura = yMin + Math.random() * (yMax - yMin);
+    
+    mesh.position.set(
+      Math.sin(ang) * (raio + 0.01),
+      altura,
+      Math.cos(ang) * (raio + 0.01)
+    );
+    
+    mesh.rotation.y = -ang + (Math.random() * 0.5 - 0.25);
+    mesh.rotation.z = Math.random() * Math.PI;
+    mesh.castShadow = true;
+    
+    cakeGroup.add(mesh);
+  }
+}
+var coresGranulado = [0xffb648, 0xffffff, 0xe8a1b0, 0x4a2b1a];
+adicionarGranulados(0.76, yMid + 0.05, yMid + hMid - 0.05, 35, coresGranulado);
+
 
 /* ---------- vela ---------- */
 var velaY = hBase + hMid + hTop;
@@ -497,7 +563,7 @@ velaMesh.position.y = velaY + 0.15;
 velaMesh.castShadow = true;
 cakeGroup.add(velaMesh);
 
-/* chama: textura pintada (nucleo azulado, corpo laranja, ponta afilada) em vez de solido liso */
+/* chama: textura pintada (nucleo azulado, corpo laranja, ponta afilada) */
 function criarTexturaChama() {
   var c = document.createElement("canvas");
   c.width = 64; c.height = 96;
@@ -592,7 +658,7 @@ chaves.forEach(function (chave, i) {
   molduras.push(grupo);
 });
 
-/* ---------- câmera: orbita lenta tipo still de filme ---------- */
+/* ---------- câmera: orbita lenta ---------- */
 var anguloCam = 0.3;
 var raioCam = 5.3;
 var alturaCam = 2.0;
@@ -723,7 +789,8 @@ cartaOverlay.addEventListener("click", function (e) {
   if (e.target === cartaOverlay) cartaOverlay.classList.remove("aberto");
 });
 
-/* ---------- some com a tela de carregando ---------- */
 var loadingEl = document.getElementById("loading");
 setTimeout(function () { loadingEl.classList.add("pronto"); }, 500);
 </script>
+</body>
+</html>
